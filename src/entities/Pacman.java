@@ -1,9 +1,20 @@
 package entities;
 
 public class Pacman {
-	static private Pacman pacman;
-	
-	public Pacman GetPacman() {
-		
-	}
+    private static Pacman pacman;
+
+    private Pacman() {
+        System.out.println("Pacman instance created!");
+    }
+
+    public static Pacman GetPacman() {
+        if (pacman == null) {
+            pacman = new Pacman();
+        }
+        return pacman;
+    }
+
+    public void move(String direction) {
+        System.out.println("Pacman moves " + direction);
+    }
 }
