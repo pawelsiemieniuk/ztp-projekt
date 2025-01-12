@@ -2,7 +2,9 @@ package cookie;
 
 public class FruitCookie extends ExtraCookie {
     private int value;
-    public FruitCookie(int value) {
+
+    public FruitCookie(Cookie wrappedCookie, int value) {
+        super(wrappedCookie); 
         this.value = value;
     }
 
@@ -18,6 +20,8 @@ public class FruitCookie extends ExtraCookie {
     public void Eat() {
         System.out.println("You ate a FruitCookie and gained " + value + " points!");
         applyPoints();
+
+        super.Eat();
     }
 
     private void applyPoints() {

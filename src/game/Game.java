@@ -21,7 +21,9 @@ public class Game implements EventListener, GameController {
 		
 	}
 
-	public void update(int data) {
+	@Override
+	public void update(String data) {
+		// TODO Auto-generated method stub
 		
 	}
 }

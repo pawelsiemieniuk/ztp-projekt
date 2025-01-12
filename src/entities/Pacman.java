@@ -3,7 +3,7 @@ package entities;
 public class Pacman {
     private static Pacman pacman;
 
-    private Pacman() {
+    public Pacman() {
         System.out.println("Pacman instance created!");
     }
 

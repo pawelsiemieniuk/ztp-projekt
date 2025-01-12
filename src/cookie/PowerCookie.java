@@ -3,7 +3,8 @@ package cookie;
 public class PowerCookie extends ExtraCookie {
     private int value; 
 
-    public PowerCookie(int value) {
+    public PowerCookie(Cookie wrappedCookie, int value) {
+        super(wrappedCookie);
         this.value = value;
     }
 
