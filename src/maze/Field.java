@@ -1,9 +1,11 @@
 package maze;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import cookie.BasicCookie;
 import cookie.Cookie;
+import cookie.FruitCookie;
+import cookie.PowerCookie;
 import entities.Ghost;
 import entities.Pacman;
 
@@ -11,22 +13,42 @@ public class Field {
     private Map<Side, Field> neighbourField; 
     private Pacman pacman;                  
     private Ghost ghost;                   
-    private Cookie cookie;               
-    private static final Field WALL_FIELD = new Field();
+    private Cookie cookie;
+    
+    private Boolean isWall;
+    //private static final Field WALL_FIELD = new Field();
     private int x;  // Dodane dla współpracy z klasą Maze
     private int y;  // Dodane dla współpracy z klasą Maze
 
     public Field(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.neighbourField = new HashMap<>();
-        this.pacman = null;
-        this.ghost = null;
-        this.cookie = null;
+    	this(x, y, false);
     }
 
-    private Field() {
-        this(-1, -1);
+    public Field(int x, int y, Boolean isWall) {
+        this.x = x;
+        this.y = y;
+        //this.neighbourField = new HashMap<>();
+        this.pacman = null;
+        this.ghost  = null;
+        this.cookie = null;
+        this.isWall = isWall;
+    }
+    
+    public Boolean placeOnField(Object object) {
+    	Boolean objPlaced = false;
+    	if(object.getClass().equals(Pacman.class)) {
+    		placePacman((Pacman)object);
+    		objPlaced = true;
+    	} else if(object.getClass().equals(Ghost.class)) {
+    		placeGhost((Ghost)object);
+    		objPlaced = true;
+    	} else if(object.getClass().equals(BasicCookie.class)
+    			  || object.getClass().equals(FruitCookie.class)
+    			  || object.getClass().equals(PowerCookie.class)) {
+    		placeCookie((Cookie)object);
+    		objPlaced = true;
+    	}
+    	return objPlaced;
     }
 
     public Boolean hasGhost() {
@@ -54,13 +76,17 @@ public class Field {
     }
 
     public Field getNeighbour(Side side) {
-        return neighbourField.getOrDefault(side, getWallField());
+        return neighbourField.getOrDefault(side, null);
+    	//return neighbourField.getOrDefault(side, getWallField());
     }
-
+    /*
     public static Field getWallField() {
         return WALL_FIELD;
-    }
-
+    }*/
+    
+    public Boolean isWall() {
+    	return isWall;
+    };
 
     public void placePacman(Pacman b) {
         if (this.pacman != null) {
