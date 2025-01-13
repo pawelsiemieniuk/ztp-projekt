@@ -12,13 +12,21 @@ public class Field {
     private Pacman pacman;                  
     private Ghost ghost;                   
     private Cookie cookie;               
-    private static final Field WALL_FIELD = new Field(); 
+    private static final Field WALL_FIELD = new Field();
+    private int x;  // Dodane dla współpracy z klasą Maze
+    private int y;  // Dodane dla współpracy z klasą Maze
 
-    public Field() {
+    public Field(int x, int y) {
+        this.x = x;
+        this.y = y;
         this.neighbourField = new HashMap<>();
         this.pacman = null;
         this.ghost = null;
         this.cookie = null;
+    }
+
+    private Field() {
+        this(-1, -1);
     }
 
     public Boolean hasGhost() {
@@ -36,7 +44,11 @@ public class Field {
     public Cookie getCookie() {
         return cookie;
     }
-
+    // Getter dla Pacmana
+    public Pacman getPacman() {
+        return pacman;
+    } 
+    
     public void setNeighbour(Side side, Field field) {
         neighbourField.put(side, field);
     }
@@ -49,8 +61,13 @@ public class Field {
         return WALL_FIELD;
     }
 
-    public void placePacman(Pacman pacman) {
-        this.pacman = pacman;
+
+    public void placePacman(Pacman b) {
+        if (this.pacman != null) {
+            System.out.println("Pacman is already on this field.");
+            return;
+        }
+        this.pacman = b;
     }
 
     public void removePacman() {
@@ -76,4 +93,18 @@ public class Field {
     public void removeCookie() {
         this.cookie = null;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public String toString() {
+        return "Field(" + x + ", " + y + ")";
+    }
+
 }

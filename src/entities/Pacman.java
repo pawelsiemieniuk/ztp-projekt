@@ -1,65 +1,53 @@
 package entities;
 
+import maze.Field;
+import maze.Maze;
+import maze.Side;
+
 public class Pacman {
-    private static Pacman pacman; 
-    private int x; 
-    private int y; 
+    private static Pacman pacman;  // Singleton instance
+    private Field currentField;    // Pole, na którym znajduje się Pacman
+    private Maze maze;             // Odniesienie do mapy
 
-    public Pacman(int x, int y) {
-        this.x = x;
-        this.y = y;
-        System.out.println("Pacman instance created at position (" + x + ", " + y + ")!");
+    private Pacman(Field startField, Maze maze) {
+        this.currentField = startField;
+        this.maze = maze;
+        System.out.println("Pacman instance created at starting field (" + startField.getX() + ", " + startField.getY() + ")");
     }
 
-    // Metoda Singleton do uzyskania instancji Pacmana
-    public static Pacman GetPacman(int x, int y) {
+    // Singleton 
+    public static Pacman GetPacman(Field startField, Maze maze) {
         if (pacman == null) {
-            pacman = new Pacman(x, y);
+            pacman = new Pacman(startField, maze);
         }
         return pacman;
     }
 
-    public static Pacman GetPacman() {
-        if (pacman == null) {
-            throw new IllegalStateException("Pacman has not been initialized. Call GetPacman(int x, int y) first.");
+    public void move(Side direction) {
+        Field nextField = maze.checkoutField(currentField, direction);
+        if (nextField != null) {
+            if (!nextField.hasGhost()) {
+                currentField.removePacman(); 
+                nextField.placePacman(this);  
+                currentField = nextField;  
+                System.out.println("Pacman moves " + direction + " to position (" + currentField.getX() + ", " + currentField.getY() + ")");
+            } else {
+                System.out.println("Pacman cannot move: Ghost is in the way!");
+            }
+        } else {
+            System.out.println("Pacman cannot move: Wall or out of bounds.");
         }
-        return pacman;
     }
 
-    public void move(String direction) {
-        switch (direction.toLowerCase()) {
-            case "up":
-                y--;
-                break;
-            case "down":
-                y++;
-                break;
-            case "left":
-                x--;
-                break;
-            case "right":
-                x++;
-                break;
-            default:
-                System.out.println("Invalid direction. Use up, down, left, or right.");
-                return;
-        }
-        System.out.println("Pacman moves " + direction + " to position (" + x + ", " + y + ")");
+    public Field getCurrentField() {
+        return currentField;
     }
 
     public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
+        return currentField.getX();
     }
 
     public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+        return currentField.getY();
     }
 }
