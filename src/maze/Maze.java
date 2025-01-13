@@ -29,7 +29,7 @@ public class Maze {
         }
 
         pacmanField.removePacman(); 
-        nextField.placePacman(new Pacman());
+        nextField.placePacman(new Pacman(0, 0));
         pacmanField = nextField;
 
         System.out.println("Pacman moved to the new field.");

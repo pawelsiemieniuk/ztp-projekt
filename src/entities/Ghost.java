@@ -4,18 +4,22 @@ import game.EventListener;
 
 public class Ghost implements EventListener {
     private GhostColor color;
-    private boolean hostile; 
-    private Behavior behavior; 
+    private boolean hostile;
+    private Behavior behavior;
+    private int x; // Pozycja X ducha
+    private int y; // Pozycja Y ducha
 
-    public Ghost(GhostColor color) {
+    public Ghost(GhostColor color, int x, int y) {
         this.color = color;
+        this.x = x;
+        this.y = y;
         this.hostile = false;
-        this.behavior = new DefaultBehavior();
+        this.behavior = new DefaultBehavior(); // Domyślne zachowanie
     }
 
     public void move() {
         System.out.println("Ghost of color " + color + " is moving.");
-        behavior.move();
+        behavior.move(this); // Przekazujemy referencję do ducha
     }
 
     public void setBehavior(Behavior newBehavior) {
@@ -31,6 +35,22 @@ public class Ghost implements EventListener {
         this.hostile = hostile;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     @Override
     public void update(String data) {
         if (data.equals("PLAYER_NEAR")) {
@@ -44,15 +64,3 @@ public class Ghost implements EventListener {
         }
     }
 }
-
-interface Behavior {
-    void move();
-}
-
-class DefaultBehavior implements Behavior {
-    @Override
-    public void move() {
-        System.out.println("Moving randomly in the environment.");
-    }
-}
-

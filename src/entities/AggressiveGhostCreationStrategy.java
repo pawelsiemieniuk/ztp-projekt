@@ -8,7 +8,7 @@ public class AggressiveGhostCreationStrategy implements GhostCreationStrategy {
     public List<Ghost> createGhosts(int numberOfGhosts) {
         List<Ghost> ghosts = new ArrayList<>();
         for (int i = 0; i < numberOfGhosts; i++) {
-            Ghost ghost = new Ghost(GhostColor.RED); // Zakładamy, że agresywne duchy są czerwone
+            Ghost ghost = new Ghost(GhostColor.RED, i, i); // Zakładamy, że agresywne duchy są czerwone
             ghost.setBehavior(new AggressiveBehavior());
             ghost.setHostility(true);
             ghosts.add(ghost);
