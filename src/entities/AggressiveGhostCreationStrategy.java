@@ -3,6 +3,9 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import maze.Field;
+import maze.Side;
+
 public class AggressiveGhostCreationStrategy implements GhostCreationStrategy {
     @Override
     public List<Ghost> createGhosts(int numberOfGhosts) {
@@ -15,4 +18,8 @@ public class AggressiveGhostCreationStrategy implements GhostCreationStrategy {
         }
         return ghosts;
     }
+	public Side CalculateNextMove(Ghost ghost, Field[][] fields) {
+		
+		return null;
+	}
 }

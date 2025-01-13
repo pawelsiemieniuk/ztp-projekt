@@ -1,15 +1,41 @@
 package entities;
 
-import maze.Field;
-import maze.Maze;
-import maze.Side;
-
 public class Pacman {
-    private static Pacman pacman;  // Singleton instance
-    private Field currentField;    // Pole, na którym znajduje się Pacman
-    private Maze maze;             // Odniesienie do mapy
-
-    private Pacman(Field startField, Maze maze) {
+    private static volatile Pacman pacman;  // Singleton instance
+    //private Field currentField;    // Pole, na którym znajduje się Pacman
+    //private Maze maze;             // Odniesienie do mapy
+    private Boolean openMouth = true;
+    private int lives = 3;
+    
+    private Pacman() {
+    }
+    
+    public static Pacman getPacman() {
+        if (pacman == null) {
+            synchronized(Pacman.class) {
+                if (pacman == null) {
+                	pacman = new Pacman();
+                }
+            }
+        }
+        return pacman;
+    }
+    
+    public void switchMouthState() {
+    	openMouth = !openMouth;
+    }
+    
+    public Boolean isMouthOpen() {
+    	return openMouth;
+    }
+    
+    public void setLives(int lives) {
+    	this.lives = lives;
+    }
+    public int getLives() {
+    	return lives;
+    }
+    /*private Pacman(Field startField, Maze maze) {
         this.currentField = startField;
         this.maze = maze;
         System.out.println("Pacman instance created at starting field (" + startField.getX() + ", " + startField.getY() + ")");
@@ -22,7 +48,7 @@ public class Pacman {
         }
         return pacman;
     }
-
+    
     public void move(Side direction) {
         Field nextField = maze.checkoutField(currentField, direction);
         if (nextField != null) {
@@ -49,5 +75,5 @@ public class Pacman {
 
     public int getY() {
         return currentField.getY();
-    }
+    }*/
 }

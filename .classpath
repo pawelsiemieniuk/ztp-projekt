@@ -6,5 +6,11 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/PC/studia/ztp/projekt-pacman/ztp_projekt/lib/lanterna-3.1.2.jar" sourcepath="/tetris/lib/lanterna-3.1.2-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/tetris/lib/lanterna-3.1.2-javadoc.jar!/"/>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

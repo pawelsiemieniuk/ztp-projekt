@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args) {
 		GameController gameController = new Game();
 		// Jakaś wstępna inicjalizacja/config itp
-
+		gameController.StartGame();
 	}
 
 }
