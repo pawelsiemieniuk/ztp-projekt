@@ -12,6 +12,9 @@ public class Maze {
     private Field[][] fields;  // Siatka pól
     private Field pacmanField; // Aktualna pozycja Pacmana
 
+    private int mazeWidth  = 0;
+    private int mazeHeight = 0;
+    
     // Konstruktor inicjalizujący labirynt
     public Maze() {//Field[][] fields) {
         //this.fields = fields;
@@ -19,6 +22,8 @@ public class Maze {
     }
     
     public void GenerateMaze(int width, int height) {
+    	mazeWidth  = width;
+    	mazeHeight = height;
         this.fields = new Field[width][height];
     	for(int x = 0; x < width; x++) {
     		for(int y = 0; y < height; y++) {
@@ -45,7 +50,8 @@ public class Maze {
     	fields[11][10].placeOnField(pink);
     	fields[12][10].placeOnField(orange);
     	
-    	fields[11][13].placeOnField(pacman);
+    	//fields[11][13].placeOnField(pacman);
+    	PlacePacman(pacman, 11, 13);
     	
     	fields[10][7].placeOnField(basic);
     	fields[11][7].placeOnField(fruit);
@@ -62,12 +68,12 @@ public class Maze {
     }
 
     // Umieszcza Pacmana w początkowej pozycji
-    public void placePacman(Pacman pacman, int startX, int startY) {
+    public void PlacePacman(Pacman pacman, int startX, int startY) {
         if (startX < 0 || startY < 0 || startY >= fields.length || startX >= fields[0].length) {
             throw new IllegalArgumentException("Invalid start position for Pacman.");
         }
 
-        Field startField = fields[startY][startX];
+        Field startField = fields[startX][startY];
         if (startField.hasPacman()) {
             throw new IllegalStateException("Pacman is already on the field.");
         }
@@ -77,13 +83,40 @@ public class Maze {
     }
 
     // Pobiera sąsiednie pole w podanym kierunku
-    public Field checkoutField(Field currentField, Side side) {
+    public Field CheckoutField(Field currentField, Side side) {
         if (currentField == null) {
             throw new IllegalArgumentException("Current field cannot be null.");
         }
 
-        Field nextField = currentField.getNeighbour(side);
-        if (nextField.isWall()) {
+        //Field nextField = currentField.getNeighbour(side);
+        Field nextField = null;
+        int curFieldPosX = currentField.getX(),
+        	curFieldPosY = currentField.getY(),
+        	nxtFieldPosX,
+        	nxtFieldPosY;
+        switch(side) {
+        	case UP:
+        		nxtFieldPosX = curFieldPosX;
+        		nxtFieldPosY = curFieldPosY - 1;
+        		nextField = fields[nxtFieldPosX][nxtFieldPosY];
+        		break;
+        	case DOWN:
+        		nxtFieldPosX = curFieldPosX;
+        		nxtFieldPosY = curFieldPosY + 1;
+        		nextField = fields[nxtFieldPosX][nxtFieldPosY];
+        		break;
+        	case LEFT:
+        		nxtFieldPosX = curFieldPosX - 1;
+        		nxtFieldPosY = curFieldPosY;
+        		nextField = fields[nxtFieldPosX][nxtFieldPosY];
+        		break;
+        	case RIGHT:
+        		nxtFieldPosX = curFieldPosX + 1;
+        		nxtFieldPosY = curFieldPosY;
+        		nextField = fields[nxtFieldPosX][nxtFieldPosY];
+        		break;
+        }
+        if (nextField == null || nextField.isWall()) {
             System.out.println("Wall field detected. Pacman cannot move there.");
             return null;
         }
@@ -91,23 +124,26 @@ public class Maze {
     }
 
     // Ruch Pacmana w określonym kierunku
-    public Field movePacman(Side side) {
+    public Field[] MovePacman(Side side) {
         if (pacmanField == null) {
             throw new IllegalStateException("Pacman is not in the maze.");
         }
 
-        Field nextField = checkoutField(pacmanField, side);
-        if (nextField == null || nextField.hasGhost()) {
-            System.out.println("Pacman cannot move to the next field. Either a wall or a ghost is blocking the way.");
-            return pacmanField;
+        Field nextField = CheckoutField(pacmanField, side);
+        if (nextField == null) {
+            System.out.println("Pacman cannot move to the next field. A wall is blocking the way.");
+            Field[] fieldsToUpdate = {};
+            return fieldsToUpdate;
         }
-
-        pacmanField.removePacman(); // Usuwa Pacmana z bieżącego pola
+        
+        Field[] fieldsToUpdate = { pacmanField, nextField };
+        
         nextField.placePacman(pacmanField.getPacman()); // Przenosi Pacmana na nowe pole
+        pacmanField.removePacman(); // Usuwa Pacmana z bieżącego pola
         pacmanField = nextField; // Aktualizuje pozycję Pacmana
 
         System.out.println("Pacman moved to: (" + nextField.getX() + ", " + nextField.getY() + ")");
-        return pacmanField;
+        return fieldsToUpdate;
     }
 
     // Wypisuje stan labiryntu dla debugowania

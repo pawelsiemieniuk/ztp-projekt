@@ -76,7 +76,7 @@ public class Field {
     }
 
     public Field getNeighbour(Side side) {
-        return neighbourField.getOrDefault(side, null);
+    	return neighbourField.getOrDefault(side, null);
     	//return neighbourField.getOrDefault(side, getWallField());
     }
     /*
@@ -88,12 +88,12 @@ public class Field {
     	return isWall;
     };
 
-    public void placePacman(Pacman b) {
+    public void placePacman(Pacman pacman) {
         if (this.pacman != null) {
             System.out.println("Pacman is already on this field.");
             return;
         }
-        this.pacman = b;
+        this.pacman = pacman;
     }
 
     public void removePacman() {
