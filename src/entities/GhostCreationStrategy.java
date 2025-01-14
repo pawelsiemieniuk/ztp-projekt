@@ -3,5 +3,5 @@ package entities;
 import java.util.List;
 
 public interface GhostCreationStrategy {
-    List<Ghost> createGhosts(int numberOfGhosts); 
+    List<RedGhost> createGhosts(int numberOfGhosts); 
 }

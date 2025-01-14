@@ -9,11 +9,11 @@ public class RandomGhostCreationStrategy implements GhostCreationStrategy {
     private Random random = new Random();
 
     @Override
-    public List<Ghost> createGhosts(int numberOfGhosts) {
-        List<Ghost> ghosts = new ArrayList<>();
+    public List<RedGhost> createGhosts(int numberOfGhosts) {
+        List<RedGhost> ghosts = new ArrayList<>();
         for (int i = 0; i < numberOfGhosts; i++) {
             GhostColor randomColor = COLORS[random.nextInt(COLORS.length)];
-            ghosts.add(new Ghost(randomColor));
+            ghosts.add(new RedGhost(randomColor));
         }
         return ghosts;
     }

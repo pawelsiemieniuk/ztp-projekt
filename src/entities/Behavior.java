@@ -4,6 +4,6 @@ import maze.Field;
 import maze.Side;
 
 public interface Behavior {
-    void move(Ghost ghost);
-    public Side CalculateNextMove(Ghost ghost, Field[][] fields);
+    void move(IGhost ghost);
+    public Side CalculateNextMove(IGhost ghost, Field[][] fields);
 }

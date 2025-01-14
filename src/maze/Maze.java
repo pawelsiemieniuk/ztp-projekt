@@ -1,6 +1,6 @@
 package maze;
 
-import entities.Ghost;
+import entities.RedGhost;
 import entities.GhostColor;
 import entities.Pacman;
 import cookie.BasicCookie;
@@ -34,10 +34,10 @@ public class Maze {
     			}
     		}
     	}
-    	Ghost red 	 = new Ghost(GhostColor.RED);
-    	Ghost blue 	 = new Ghost(GhostColor.BLUE);
-    	Ghost pink 	 = new Ghost(GhostColor.PINK);
-    	Ghost orange = new Ghost(GhostColor.ORANGE);
+    	RedGhost red 	 = new RedGhost(GhostColor.RED);
+    	RedGhost blue 	 = new RedGhost(GhostColor.BLUE);
+    	RedGhost pink 	 = new RedGhost(GhostColor.PINK);
+    	RedGhost orange = new RedGhost(GhostColor.ORANGE);
     	
     	Pacman pacman = Pacman.getPacman();
     	

@@ -17,7 +17,7 @@ import view.MenuSelect;
 import view.View;
 
 public class Game implements EventListener, GameController {
-	private static int TERMINAL_WIDTH 	  = 46,
+	private static int TERMINAL_WIDTH 	  = 120,
 					   TERMINAL_HEIGHT 	  = 40,
 					   TERMINAL_FONT_SIZE = 20;
 

@@ -4,7 +4,7 @@ import game.EventListener;
 import maze.Field;
 import maze.Side;
 
-public class Ghost implements EventListener {
+public class BlueGhost implements EventListener, IGhost {
     private GhostColor color;
     private boolean hostile;
     private Behavior behavior;
@@ -12,7 +12,7 @@ public class Ghost implements EventListener {
     //private int y; // Pozycja Y ducha
 
     //public Ghost(GhostColor color, int x, int y) {
-    public Ghost(GhostColor color) {
+    public BlueGhost(GhostColor color) {
         this.color = color;
         //this.x = x;
         //this.y = y;
@@ -54,4 +54,10 @@ public class Ghost implements EventListener {
             System.out.println("Unknown event received: " + data);
         }
     }
+
+	
+	public RedGhost createGhost(GhostColor color, Behavior behavior) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
