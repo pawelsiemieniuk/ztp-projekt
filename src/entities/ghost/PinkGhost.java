@@ -1,5 +1,7 @@
 package entities.ghost;
 
+import com.googlecode.lanterna.TextColor;
+
 import entities.ghost.behavior.IBehavior;
 import entities.ghost.behavior.RunBehavior;
 import game.EventListener;
@@ -7,24 +9,19 @@ import maze.Field;
 import maze.Side;
 
 public class PinkGhost implements EventListener, IGhost {
-    private GhostColor color;
+    private TextColor color;
     private boolean hostile;
     private IBehavior behavior;
-    //private int x; // Pozycja X ducha
-    //private int y; // Pozycja Y ducha
 
-    //public Ghost(GhostColor color, int x, int y) {
-    public PinkGhost(GhostColor color) {
-        this.color = color;
-        //this.x = x;
-        //this.y = y;
-        this.hostile = true;
-        this.behavior = new RunBehavior(); // Domyślne zachowanie
+    public PinkGhost() {
+        this.color 	  = TextColor.ANSI.MAGENTA_BRIGHT;
+        this.hostile  = true;
+        this.behavior = new RunBehavior();
     }
 
     public Side getNextMove(Field[][] fields) {
         System.out.println("Ghost of color " + color + " is moving.");
-        return behavior.CalculateNextMove(this, fields); // Przekazujemy referencję do ducha
+        return behavior.CalculateNextMove(this, fields);
     }
 
     public void setBehavior(IBehavior newBehavior) {
@@ -40,7 +37,7 @@ public class PinkGhost implements EventListener, IGhost {
         this.hostile = hostile;
     }
 
-    public GhostColor getColor() {
+    public TextColor getColor() {
     	return this.color;
     }
 
@@ -56,10 +53,4 @@ public class PinkGhost implements EventListener, IGhost {
             System.out.println("Unknown event received: " + data);
         }
     }
-
-	
-	public RedGhost createGhost(GhostColor color, IBehavior behavior) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

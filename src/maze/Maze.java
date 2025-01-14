@@ -1,7 +1,10 @@
 package maze;
 
+import entities.ghost.IGhost;
+import entities.ghost.BlueGhost;
+import entities.ghost.OrangeGhost;
+import entities.ghost.PinkGhost;
 import entities.ghost.RedGhost;
-import entities.ghost.GhostColor;
 import entities.Pacman;
 import cookie.BasicCookie;
 import cookie.Cookie;
@@ -34,10 +37,10 @@ public class Maze {
     			}
     		}
     	}
-    	RedGhost red 	 = new RedGhost(GhostColor.RED);
-    	RedGhost blue 	 = new RedGhost(GhostColor.BLUE);
-    	RedGhost pink 	 = new RedGhost(GhostColor.PINK);
-    	RedGhost orange = new RedGhost(GhostColor.ORANGE);
+    	IGhost red 	  = new RedGhost();
+    	IGhost blue   = new BlueGhost();
+    	IGhost pink   = new PinkGhost();
+    	IGhost orange = new OrangeGhost();
     	
     	Pacman pacman = Pacman.getPacman();
     	
@@ -97,24 +100,25 @@ public class Maze {
         	curFieldPosY = currentField.getY(),
         	nxtFieldPosX,
         	nxtFieldPosY;
+        System.out.println(mazeWidth);
         switch(side) {
         	case UP:
         		nxtFieldPosX = curFieldPosX;
-        		nxtFieldPosY = (curFieldPosY - 1) % mazeHeight;
+        		nxtFieldPosY = curFieldPosY - 1;//(curFieldPosY - 1 <= 0) ? mazeHeight - 1 : curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case DOWN:
         		nxtFieldPosX = curFieldPosX;
-        		nxtFieldPosY = (curFieldPosY + 1) % mazeHeight;
+        		nxtFieldPosY = curFieldPosY + 1;//(curFieldPosY + 1 >= mazeHeight) ? 0 : curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case LEFT:
-        		nxtFieldPosX = curFieldPosX -1;
+        		nxtFieldPosX = curFieldPosX -1;//(curFieldPosX -1 <= 0) ? mazeWidth - 1 : curFieldPosX;
         		nxtFieldPosY = curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case RIGHT:
-        		nxtFieldPosX = (curFieldPosX + 1) % mazeWidth;
+        		nxtFieldPosX = curFieldPosX + 1;//(curFieldPosX + 1 >= mazeWidth) ? 0 : curFieldPosX;
         		nxtFieldPosY = curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;

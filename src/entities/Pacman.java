@@ -1,9 +1,8 @@
 package entities;
 
 public class Pacman {
-    private static volatile Pacman pacman;  // Singleton instance
-    //private Field currentField;    // Pole, na którym znajduje się Pacman
-    //private Maze maze;             // Odniesienie do mapy
+    private static volatile Pacman pacman;
+    
     private Boolean openMouth = true;
     private int lives = 3;
     

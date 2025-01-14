@@ -6,7 +6,7 @@ import maze.Side;
 
 public class BackHomeBehavior implements IBehavior {
 	public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

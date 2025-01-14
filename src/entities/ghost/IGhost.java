@@ -1,10 +1,7 @@
 package entities.ghost;
 
-import java.util.List;
-
-import entities.ghost.behavior.IBehavior;
-
+import com.googlecode.lanterna.TextColor;
 
 public interface IGhost {
-    IGhost createGhost(GhostColor color, IBehavior behavior);
+	public TextColor getColor();
 }

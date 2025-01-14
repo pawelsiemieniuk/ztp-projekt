@@ -10,6 +10,7 @@ import com.googlecode.lanterna.screen.Screen;
 import cookie.BasicCookie;
 import cookie.FruitCookie;
 import cookie.PowerCookie;
+import entities.ghost.RedGhost;
 import maze.Field;
 
 public class GameView {
@@ -131,20 +132,23 @@ public class GameView {
 			DrawLives(field.getPacman().getLives());
 		} else if(field.hasGhost()) {
 			fieldSymbol = Symbols.FACE_BLACK;
-			switch(field.getGhost().getColor()) {
-				case RED:
+			fieldColor = field.getGhost().getColor();
+			/*switch(field.getGhost().getColor()) {
+				case TextColor.ANSI.RED:
 					fieldColor = TextColor.ANSI.RED;
 					break;
-				case PINK:
+				case TextColor.ANSI.MAGENTA_BRIGHT:
 					fieldColor = TextColor.ANSI.MAGENTA;
 					break;
-				case BLUE:
+				case TextColor.ANSI.BLUE:
 					fieldColor = TextColor.ANSI.BLUE;
 					break;
-				case ORANGE:
+				case TextColor.ANSI.YELLOW:
 					fieldColor = TextColor.ANSI.YELLOW;
 					break;
-			}
+			default:
+				break;
+			}*/
 		} else if(field.hasCookie()) {
 			Class cookieClass = field.getCookie().getClass();
 			if(cookieClass.equals(BasicCookie.class)) {
