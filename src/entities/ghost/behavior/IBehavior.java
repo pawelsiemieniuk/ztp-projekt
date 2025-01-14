@@ -1,9 +1,9 @@
-package entities;
+package entities.ghost.behavior;
 
+import entities.ghost.IGhost;
 import maze.Field;
 import maze.Side;
 
-public interface Behavior {
-    void move(IGhost ghost);
+public interface IBehavior {
     public Side CalculateNextMove(IGhost ghost, Field[][] fields);
 }

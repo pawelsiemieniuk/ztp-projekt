@@ -6,7 +6,7 @@ import cookie.BasicCookie;
 import cookie.Cookie;
 import cookie.FruitCookie;
 import cookie.PowerCookie;
-import entities.RedGhost;
+import entities.ghost.RedGhost;
 import entities.Pacman;
 
 public class Field {

@@ -1,7 +1,7 @@
 package maze;
 
-import entities.RedGhost;
-import entities.GhostColor;
+import entities.ghost.RedGhost;
+import entities.ghost.GhostColor;
 import entities.Pacman;
 import cookie.BasicCookie;
 import cookie.Cookie;
@@ -61,6 +61,9 @@ public class Maze {
     	fields[10][11] = new Field(10, 11, true);
     	fields[11][11] = new Field(11, 11, true);
     	fields[12][11] = new Field(12, 11, true);
+    	
+    	fields[0][10] = new Field(0,10);
+    	fields[width-1][10] = new Field(width-1,10);
     }
     
     public Field[][] getFields() {
@@ -97,21 +100,21 @@ public class Maze {
         switch(side) {
         	case UP:
         		nxtFieldPosX = curFieldPosX;
-        		nxtFieldPosY = curFieldPosY - 1;
+        		nxtFieldPosY = (curFieldPosY - 1) % mazeHeight;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case DOWN:
         		nxtFieldPosX = curFieldPosX;
-        		nxtFieldPosY = curFieldPosY + 1;
+        		nxtFieldPosY = (curFieldPosY + 1) % mazeHeight;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case LEFT:
-        		nxtFieldPosX = curFieldPosX - 1;
+        		nxtFieldPosX = curFieldPosX -1;
         		nxtFieldPosY = curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case RIGHT:
-        		nxtFieldPosX = curFieldPosX + 1;
+        		nxtFieldPosX = (curFieldPosX + 1) % mazeWidth;
         		nxtFieldPosY = curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;

@@ -1,23 +1,25 @@
-package entities;
+package entities.ghost;
 
+import entities.ghost.behavior.IBehavior;
+import entities.ghost.behavior.RunBehavior;
 import game.EventListener;
 import maze.Field;
 import maze.Side;
 
-public class RedGhost implements EventListener, IGhost {
+public class PinkGhost implements EventListener, IGhost {
     private GhostColor color;
     private boolean hostile;
-    private Behavior behavior;
+    private IBehavior behavior;
     //private int x; // Pozycja X ducha
     //private int y; // Pozycja Y ducha
 
     //public Ghost(GhostColor color, int x, int y) {
-    public RedGhost(GhostColor color) {
+    public PinkGhost(GhostColor color) {
         this.color = color;
         //this.x = x;
         //this.y = y;
         this.hostile = true;
-        this.behavior = new DefaultBehavior(); // Domyślne zachowanie
+        this.behavior = new RunBehavior(); // Domyślne zachowanie
     }
 
     public Side getNextMove(Field[][] fields) {
@@ -25,7 +27,7 @@ public class RedGhost implements EventListener, IGhost {
         return behavior.CalculateNextMove(this, fields); // Przekazujemy referencję do ducha
     }
 
-    public void setBehavior(Behavior newBehavior) {
+    public void setBehavior(IBehavior newBehavior) {
         this.behavior = newBehavior;
         System.out.println("Behavior updated to: " + newBehavior.getClass().getSimpleName());
     }
@@ -56,7 +58,7 @@ public class RedGhost implements EventListener, IGhost {
     }
 
 	
-	public RedGhost createGhost(GhostColor color, Behavior behavior) {
+	public RedGhost createGhost(GhostColor color, IBehavior behavior) {
 		// TODO Auto-generated method stub
 		return null;
 	}

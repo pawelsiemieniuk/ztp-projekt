@@ -1,4 +1,4 @@
-package entities;
+package entities.ghost;
 
 public enum GhostColor {
 	RED,
