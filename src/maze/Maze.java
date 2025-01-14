@@ -104,21 +104,21 @@ public class Maze {
         switch(side) {
         	case UP:
         		nxtFieldPosX = curFieldPosX;
-        		nxtFieldPosY = curFieldPosY - 1;//(curFieldPosY - 1 <= 0) ? mazeHeight - 1 : curFieldPosY;
+        		nxtFieldPosY = (curFieldPosY - 1 < 0) ? mazeHeight - 1 : curFieldPosY - 1;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case DOWN:
         		nxtFieldPosX = curFieldPosX;
-        		nxtFieldPosY = curFieldPosY + 1;//(curFieldPosY + 1 >= mazeHeight) ? 0 : curFieldPosY;
+        		nxtFieldPosY = (curFieldPosY + 1 >= mazeHeight) ? 0 : curFieldPosY + 1;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case LEFT:
-        		nxtFieldPosX = curFieldPosX -1;//(curFieldPosX -1 <= 0) ? mazeWidth - 1 : curFieldPosX;
+        		nxtFieldPosX = (curFieldPosX -1 < 0) ? mazeWidth - 1 : curFieldPosX - 1;
         		nxtFieldPosY = curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
         	case RIGHT:
-        		nxtFieldPosX = curFieldPosX + 1;//(curFieldPosX + 1 >= mazeWidth) ? 0 : curFieldPosX;
+        		nxtFieldPosX = (curFieldPosX + 1 >= mazeWidth) ? 0 : curFieldPosX + 1;
         		nxtFieldPosY = curFieldPosY;
         		nextField = fields[nxtFieldPosX][nxtFieldPosY];
         		break;
