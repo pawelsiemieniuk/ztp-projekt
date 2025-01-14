@@ -19,21 +19,16 @@ import maze.Field;
 public class View implements IViewController {
 	private static volatile View view;
 	
-	private static int TERMINAL_FONT_SIZE = 20;
 	
     private static int  BUTTON_WIDTH			 = 15,
-    					BUTTON_POS_X			 = 31,
-    					BUTTON_NEWGAME_POS_Y 	 = 9,
-    					BUTTON_LOADGAME_POS_Y 	 = 11,
-    					BUTTON_LEADERBOARD_POS_Y = 13,
-    					BUTTON_EXIT_POS_Y 		 = 15;
+    					MENU_ENTRIES 			 = 3;
     					
     private static String BUTTON_NEWGAME_TEXT 	  = "NEW GAME      ",
 			  			  BUTTON_LOADGAME_TEXT 	  = "LOAD GAME     ",
-    					  BUTTON_LEADERBOARD_TEXT = "LEADERBOARD   ",
+    					  //BUTTON_LEADERBOARD_TEXT = "LEADERBOARD   ",
     					  BUTTON_EXIT_TEXT 		  = "EXIT          ",
     					  FOOTER_TEXT 			  = "Ctrl+Q: EXIT | ESC: PAUSE | Ctrl+S: SAVE";
-    private String 		  HEADER_TEXT 			  = "TETRIS";
+
 
     private Screen screen;
     private int screenWidth, screenHeight;
@@ -60,14 +55,14 @@ public class View implements IViewController {
     }
     
     public Screen OpenWindow() {
-    	return OpenWindow(null);
+    	return OpenWindow(null, 20);
     }
     
-    public Screen OpenWindow(TerminalSize terminalSize) {
+    public Screen OpenWindow(TerminalSize terminalSize, int terminalFontSize) {
         try {
 			screen = new DefaultTerminalFactory()
 					.setInitialTerminalSize(terminalSize)
-					.setTerminalEmulatorFontConfiguration(SwingTerminalFontConfiguration.getDefaultOfSize(TERMINAL_FONT_SIZE))
+					.setTerminalEmulatorFontConfiguration(SwingTerminalFontConfiguration.getDefaultOfSize(terminalFontSize))
 					.createScreen();
 			screen.startScreen();
 		} catch (IOException e) {
@@ -95,42 +90,52 @@ public class View implements IViewController {
     	
     	int gWidth  = gameView.CalcGameWidth(gameColumns);
     	int gHeight = gameRows;
-    	int gPosX 	= (int)((screenWidth - gWidth) / 2);
+    	int gPosX 	= (int)((screenWidth  - gWidth) / 2);
     	//int gPosY 	 = 1;
     	int gPosY 	= (int)((screenHeight - gHeight) / 2);
     	
     	gameView.SetupGameView(gPosX, gPosY, gWidth, gHeight);
     	
     	screen.clear();
-        /*gameBoxView = new GameBoxView(screen);
-        
-    	int GBWidth  = gameBoxView.CalcGameBoxWidth(gameColumns);
-    	int GBHeight = gameRows;
-    	int GBPosX 	 = (int)((screenWidth - GBWidth) / 2) - 1;
-    	int GBPosY 	 = 1;
-        gameBoxView.SetupGameBox(GBPosX, GBPosY, GBWidth, GBHeight);
-        
-        screen.clear();*/
     }
 
     public void DrawMenu() throws IOException {
     	screen.clear();
     	
+    	int menuWidth  = BUTTON_WIDTH;
+    	int menuHeight = MENU_ENTRIES * 2;
+    	int menuPosX   = (int)((screenWidth  - menuWidth)  / 2);
+    	int menuPosY   = (int)((screenHeight - menuHeight) / 2);
+    	int ngPosY = menuPosY, 
+    		lgPosY = menuPosY + 2, 
+    		exPosY = menuPosY + 4;
+    	menuScreen
+    		.setBackgroundColor(fgColor).setForegroundColor(bgColor)
+    		.drawLine(menuPosX, ngPosY, menuPosX + menuWidth, ngPosY, ' ')
+    		.drawLine(menuPosX, lgPosY, menuPosX + menuWidth, lgPosY, ' ')
+    		//.drawLine(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, BUTTON_POS_X + BUTTON_WIDTH, BUTTON_LEADERBOARD_POS_Y, ' ')
+    		.drawLine(menuPosX, exPosY, menuPosX + menuWidth, exPosY, ' ')
+    		.putCSIStyledString(menuPosX, ngPosY, BUTTON_NEWGAME_TEXT + Symbols.TRIANGLE_LEFT_POINTING_BLACK)
+    		.putCSIStyledString(menuPosX, lgPosY, BUTTON_LOADGAME_TEXT)
+    		//.putCSIStyledString(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, BUTTON_LEADERBOARD_TEXT)
+    		.putCSIStyledString(menuPosX, exPosY, BUTTON_EXIT_TEXT);
+    	
     	DrawFooter();
     	DrawHeader("MENU");
     	
-    	menuScreen
-    		.setBackgroundColor(fgColor).setForegroundColor(bgColor)
-    		.drawLine(BUTTON_POS_X, BUTTON_NEWGAME_POS_Y, 	  BUTTON_POS_X + BUTTON_WIDTH, BUTTON_NEWGAME_POS_Y, ' ')
-    		.drawLine(BUTTON_POS_X, BUTTON_LOADGAME_POS_Y, 	  BUTTON_POS_X + BUTTON_WIDTH, BUTTON_LOADGAME_POS_Y, ' ')
-    		.drawLine(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, BUTTON_POS_X + BUTTON_WIDTH, BUTTON_LEADERBOARD_POS_Y, ' ')
-    		.drawLine(BUTTON_POS_X, BUTTON_EXIT_POS_Y, 		  BUTTON_POS_X + BUTTON_WIDTH, BUTTON_EXIT_POS_Y, ' ')
-    		.putCSIStyledString(BUTTON_POS_X, BUTTON_NEWGAME_POS_Y, 	BUTTON_NEWGAME_TEXT + Symbols.TRIANGLE_LEFT_POINTING_BLACK)
-    		.putCSIStyledString(BUTTON_POS_X, BUTTON_LOADGAME_POS_Y, 	BUTTON_LOADGAME_TEXT)
-    		.putCSIStyledString(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, BUTTON_LEADERBOARD_TEXT)
-    		.putCSIStyledString(BUTTON_POS_X, BUTTON_EXIT_POS_Y, 		BUTTON_EXIT_TEXT);
-    	
     	screen.refresh();
+    }
+    
+    public void DrawGame(Field[] fields) throws Exception {
+    	screen.clear();
+    	
+    	DrawFooter();
+    	DrawHeader("GAME");
+    	if(gameView == null) {
+    		throw new Exception("'gameView' not initialized, use SetupGameView()");
+    	}
+		gameView.DrawGame(fields);
+		screen.refresh();
     }
     
     private void DrawHeader(String headerText) {
@@ -146,31 +151,7 @@ public class View implements IViewController {
     		.drawLine(0, screenHeight, screenWidth, screenHeight, ' ')
 		.putCSIStyledString(1, screenHeight, FOOTER_TEXT);
     }
-    
-    public void DrawLeaderboard() {
-    	DrawFooter();
-    	DrawHeader("LEADERBOARD");
-    }
-    
-    public void DrawGame(Field[] fields) throws Exception {
-    	DrawFooter();
-    	DrawHeader("GAME");
-    	if(gameView == null) {
-    		throw new Exception("'gameView' not initialized, use SetupGameView()");
-    	}
-		gameView.DrawGame(fields);
-		screen.refresh();
-    }
-    /*public void DrawGameBox() throws Exception {
-    	DrawFooter();
-    	DrawHeader("GAME");
-    	if(gameBoxView == null) {
-    		throw new Exception("'gameBoxView' not initialized, use SetupGameBoxView()");
-    	}
-		gameBoxView.DrawGameBox();
-		screen.refresh();
-    }
-    
+    /*
     public void DrawGameFrame(HashMap<Integer[], TextColor> blocksToDraw) throws IOException {
     	gameBoxView.UpdateGameSpace(blocksToDraw);
 		screen.refresh();
@@ -206,11 +187,19 @@ public class View implements IViewController {
     	}
     	
     }
-    /*
+    
     public void UpdateMenu(MenuSelect option) throws IOException {
+    	int menuWidth  = BUTTON_WIDTH;
+    	int menuHeight = MENU_ENTRIES * 2;
+    	int menuPosX   = (int)((screenWidth  - menuWidth)  / 2);
+    	int menuPosY   = (int)((screenHeight - menuHeight) / 2);
+    	int ngPosY = menuPosY, 
+    		lgPosY = menuPosY + 2, 
+    		exPosY = menuPosY + 4;
+    	
     	String buttonStartText 		 = BUTTON_NEWGAME_TEXT;
     	String buttonLoadText 		 = BUTTON_LOADGAME_TEXT;
-    	String buttonLeaderboardText = BUTTON_LEADERBOARD_TEXT;
+    	//String buttonLeaderboardText = BUTTON_LEADERBOARD_TEXT;
     	String buttonExitText 		 = BUTTON_EXIT_TEXT;
     	
     	switch(option) {
@@ -220,44 +209,49 @@ public class View implements IViewController {
     		case LOAD:
     			buttonLoadText += Symbols.TRIANGLE_LEFT_POINTING_BLACK;
     			break;
-    		case LEADERBOARD:
+    		/*case LEADERBOARD:
     			buttonLeaderboardText += Symbols.TRIANGLE_LEFT_POINTING_BLACK;
-    			break;
+    			break;*/
     		case EXIT:
     			buttonExitText += Symbols.TRIANGLE_LEFT_POINTING_BLACK;
     			break;
     	}
     	menuScreen
-		.setBackgroundColor(fgColor).setForegroundColor(bgColor)
-		.drawLine(BUTTON_POS_X, BUTTON_NEWGAME_POS_Y, 	  BUTTON_POS_X + BUTTON_WIDTH, BUTTON_NEWGAME_POS_Y, ' ')
-		.drawLine(BUTTON_POS_X, BUTTON_LOADGAME_POS_Y, 	  BUTTON_POS_X + BUTTON_WIDTH, BUTTON_LOADGAME_POS_Y, ' ')
-		.drawLine(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, BUTTON_POS_X + BUTTON_WIDTH, BUTTON_LEADERBOARD_POS_Y, ' ')
-		.drawLine(BUTTON_POS_X, BUTTON_EXIT_POS_Y, 		  BUTTON_POS_X + BUTTON_WIDTH, BUTTON_EXIT_POS_Y, ' ')
-		.putCSIStyledString(BUTTON_POS_X, BUTTON_NEWGAME_POS_Y, buttonStartText)
-		.putCSIStyledString(BUTTON_POS_X, BUTTON_LOADGAME_POS_Y, buttonLoadText)
-		.putCSIStyledString(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, buttonLeaderboardText)
-		.putCSIStyledString(BUTTON_POS_X, BUTTON_EXIT_POS_Y, buttonExitText);
+    		.setBackgroundColor(fgColor).setForegroundColor(bgColor)
+    		.drawLine(menuPosX, ngPosY, menuPosX + menuWidth, ngPosY, ' ')
+    		.drawLine(menuPosX, lgPosY, menuPosX + menuWidth, lgPosY, ' ')
+    		.drawLine(menuPosX, exPosY, menuPosX + menuWidth, exPosY, ' ')
+    		.putCSIStyledString(menuPosX, ngPosY, buttonStartText)
+    		.putCSIStyledString(menuPosX, lgPosY, buttonLoadText)
+    		.putCSIStyledString(menuPosX, exPosY, buttonExitText);
     	
     	screen.refresh();
-    }*/
+    }
+    
+    public void UpdateGameView(ArrayList<Field> fieldsToUpdate) throws IOException {
+    	gameView.Update(fieldsToUpdate);
+    	screen.refresh();
+    }
+    
+    public void Exit() throws Exception {
+    	CloseWindow();
+    	System.exit(0);
+		throw new Exception("App exit did not succeed.");
+    }
+    
+    private void CloseWindow() {
+    	try {
+			screen.stopScreen();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
     
     public KeyStroke GetLastKey() throws IOException {
     	return screen.pollInput();
     }
     public KeyStroke WaitForKey() throws IOException {
     	return screen.readInput();
-    }
-    
-    public void refreshScreen() throws IOException {
-    	screen.refresh();
-    }
-    
-    public void CloseWindow() {
-    	try {
-			screen.stopScreen();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
     }
 }
 

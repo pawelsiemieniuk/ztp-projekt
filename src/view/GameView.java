@@ -1,5 +1,7 @@
 package view;
 
+import java.util.ArrayList;
+
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -115,14 +117,14 @@ public class GameView {
 		int fieldPosY = mazePosY + fieldBlockPos.y();
 		
 		char fieldSymbol = ' ';
-		TextColor bgFieldColor = TextColor.ANSI.BLACK_BRIGHT;
+		TextColor bgFieldColor = TextColor.ANSI.BLACK;
 		TextColor fieldColor   = TextColor.ANSI.BLACK;
 		
 		if(field.isWall()) 
 		{
 			fieldSymbol = Symbols.BLOCK_SOLID;
-			bgFieldColor = TextColor.ANSI.WHITE;
-			fieldColor = TextColor.ANSI.WHITE;
+			bgFieldColor = TextColor.ANSI.WHITE_BRIGHT;
+			fieldColor = TextColor.ANSI.WHITE_BRIGHT;
 		} else if(field.hasPacman()) {
 			fieldSymbol = Symbols.FACE_BLACK;
 			fieldColor = TextColor.ANSI.YELLOW_BRIGHT;
@@ -175,6 +177,13 @@ public class GameView {
 		}
 		
 	}
+	
+	public void Update(ArrayList<Field> fieldsToUpdate) {
+		for(Field field : fieldsToUpdate) {
+			DrawField(field);
+		}
+	}
+	
 	
 	private Position translatePositionToBlockPosition(Position position) {
 		return new Position(position.x(), position.y());
