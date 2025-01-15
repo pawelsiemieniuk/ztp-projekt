@@ -17,12 +17,15 @@ import view.MenuSelect;
 import view.View;
 
 public class Game implements EventListener, GameController {
-	private static int TERMINAL_WIDTH 	  = 120,
+	private static int TERMINAL_WIDTH 	  = 46,
 					   TERMINAL_HEIGHT 	  = 40,
 					   TERMINAL_FONT_SIZE = 20;
 
-	private static int FRAME_TIME_ms = 10; // ms
-	private static int GHOST_MOVE_FRAMES = 60;
+	private static Boolean CONTINUOUS_MOVE_MODE = true;
+	
+	private static int FRAME_TIME_ms = 10; 	 	// ms
+	private static int GHOST_MOVE_FRAMES  = 60,
+					   PACMAN_MOVE_FRAMES = 20; // Tylko gdy CONTINUOUS_MOVE_MODE = true
 	
 	private IViewController viewController;
 
@@ -125,31 +128,51 @@ public class Game implements EventListener, GameController {
 	
 	private void GameLoop() {
 		KeyStroke key = null;
+		KeyStroke lastKey = null;
 
-		int frameCounter = 0;
+		int ghostFrameCounter  = 0,
+			pacmanFrameCounter = 0;
 		Duration deltaTime = Duration.ZERO;
 		Instant beginFrameTime = Instant.now();
 		while(!gameEnded) {
 			try {
 				key = viewController.GetLastKey();
+				if(CONTINUOUS_MOVE_MODE && key != null) { 
+					lastKey = key; 
+				}
 			} catch (IOException e) { e.printStackTrace(); }
 
-			if(key != null) {
+			if(CONTINUOUS_MOVE_MODE) {
+				if(lastKey != null) {
+					if(gamePaused && key != null) {
+						System.out.println(gamePaused);
+						PauseKeyHandler(key);
+						lastKey = null;
+					} else if(!gamePaused) {
+						GameKeyHandler(lastKey);
+						if(pacmanFrameCounter >= PACMAN_MOVE_FRAMES) {
+							PacmanKeyHandler(lastKey);
+							pacmanFrameCounter = 0;
+						}
+					}
+				}
+			} else if(key != null) {
 				if(gamePaused) {
 					PauseKeyHandler(key);
 				} else {
 					GameKeyHandler(key);
+					PacmanKeyHandler(key);
 				}
 			}
 
 			deltaTime = Duration.between(beginFrameTime, Instant.now());
 			if(!gamePaused && deltaTime.toMillis() >= FRAME_TIME_ms) {
-				if(frameCounter >= GHOST_MOVE_FRAMES) {
-					//MoveGhosts();
-					System.out.println("Ghosts move");
-					frameCounter = 0;
+				if(ghostFrameCounter >= GHOST_MOVE_FRAMES) {
+					MoveGhosts();
+					ghostFrameCounter = 0;
 				}
-				frameCounter++;
+				ghostFrameCounter++;
+				if(CONTINUOUS_MOVE_MODE) { pacmanFrameCounter++; }
 
 				try {
 					viewController.UpdateGameView(fieldsToUpdate);
@@ -232,18 +255,32 @@ public class Game implements EventListener, GameController {
 			case Escape: // Pause
 				viewController.UpdateHeader(true);
 				PauseGame();
-				//tetrisController.clrscr();
 				return;
-			case ArrowUp: // Clockwise turn
+			case Character:
+				break;
+			default:
+				return;
+		}
+		if(key.getCharacter() == 'q' && key.isCtrlDown()) {
+			try {
+				viewController.Exit();
+			} catch (Exception e) { e.printStackTrace(); }
+		}
+			
+	}
+	
+	public void PacmanKeyHandler(KeyStroke key) {
+		switch(key.getKeyType()) {
+			case ArrowUp:
 				Move(Side.UP);
 				return;
-			case ArrowDown: // Soft drop
+			case ArrowDown:
 				Move(Side.DOWN);
 				return;
-			case ArrowLeft: // Move left
+			case ArrowLeft:
 				Move(Side.LEFT);
 				return;
-			case ArrowRight: // Move right
+			case ArrowRight:
 				Move(Side.RIGHT);
 				return;
 			case Character:
@@ -252,31 +289,18 @@ public class Game implements EventListener, GameController {
 				return;
 		}
 		switch(key.getCharacter()) {
-			case 'q':
-				if(key.isCtrlDown()) {
-					//SaveGame();
-					try {
-						viewController.Exit();
-					} catch (Exception e) { e.printStackTrace(); }
-				}
-				break;
-			case 'w': // Hard drop
+			case 'w':
 				Move(Side.UP);
 				break;
-			case 's': // Counterclockwise turn
+			case 's':
 				Move(Side.DOWN);
 				break;
-			case 'a': // Clockwise turn
+			case 'a': 
 				Move(Side.LEFT);
 				break;
-			case 'd': // Cache Shape
+			case 'd': 
 				Move(Side.RIGHT);
 				break;
-			/*case 's':
-				if(key.isCtrlDown()) {
-					gameInstance.SaveGame();
-				}
-				break;*/
 		}
 	}
 
@@ -310,6 +334,12 @@ public class Game implements EventListener, GameController {
 	
 	private void Move(Side side) {
 		for(Field field: maze.MovePacman(side)) {
+			fieldsToUpdate.add(field);
+		}
+	}
+	
+	private void MoveGhosts() {
+		for(Field field : maze.MoveGhosts()) {
 			fieldsToUpdate.add(field);
 		}
 	}

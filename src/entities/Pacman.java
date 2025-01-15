@@ -5,6 +5,7 @@ public class Pacman {
     
     private Boolean openMouth = true;
     private int lives = 3;
+    private int score = 0;
     
     private Pacman() {
     }
@@ -33,6 +34,13 @@ public class Pacman {
     }
     public int getLives() {
     	return lives;
+    }
+    
+    public void setScore(int score) {
+    	this.score = score;
+    }
+    public int getScore() {
+    	return score;
     }
     /*private Pacman(Field startField, Maze maze) {
         this.currentField = startField;

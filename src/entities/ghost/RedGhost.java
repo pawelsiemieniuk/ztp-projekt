@@ -14,7 +14,7 @@ public class RedGhost implements EventListener, IGhost {
     private IBehavior behavior;
 
     public RedGhost() {
-        this.color 	  = TextColor.ANSI.RED;
+        this.color 	  = TextColor.ANSI.RED_BRIGHT;
         this.hostile  = true;
         this.behavior = new RunBehavior();
     }

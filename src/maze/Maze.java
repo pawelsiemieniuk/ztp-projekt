@@ -6,6 +6,9 @@ import entities.ghost.OrangeGhost;
 import entities.ghost.PinkGhost;
 import entities.ghost.RedGhost;
 import entities.Pacman;
+
+import java.util.ArrayList;
+
 import cookie.BasicCookie;
 import cookie.Cookie;
 import cookie.FruitCookie;
@@ -13,15 +16,13 @@ import cookie.PowerCookie;
 
 public class Maze {
     private Field[][] fields;  // Siatka pól
-    private Field pacmanField; // Aktualna pozycja Pacmana
+    private Field pacmanField = null; // Aktualna pozycja Pacmana
+    private ArrayList<Field> ghostsFields = new ArrayList<Field>();
 
     private int mazeWidth  = 0;
     private int mazeHeight = 0;
     
-    // Konstruktor inicjalizujący labirynt
-    public Maze() {//Field[][] fields) {
-        //this.fields = fields;
-        this.pacmanField = null; // Pacman na początku nie jest w labiryncie
+    public Maze() {
     }
     
     public void GenerateMaze(int width, int height) {
@@ -53,12 +54,17 @@ public class Maze {
     	fields[11][10].placeOnField(pink);
     	fields[12][10].placeOnField(orange);
     	
-    	//fields[11][13].placeOnField(pacman);
+    	ghostsFields.add(fields[9][10]);
+    	ghostsFields.add(fields[10][10]);
+    	ghostsFields.add(fields[11][10]);
+    	ghostsFields.add(fields[12][10]);
+    	
     	PlacePacman(pacman, 11, 13);
     	
     	fields[10][7].placeOnField(basic);
     	fields[11][7].placeOnField(fruit);
     	fields[12][7].placeOnField(power);
+    	
     	
     	fields[9][11]  = new Field(9, 11, true);
     	fields[10][11] = new Field(10, 11, true);
@@ -94,13 +100,11 @@ public class Maze {
             throw new IllegalArgumentException("Current field cannot be null.");
         }
 
-        //Field nextField = currentField.getNeighbour(side);
         Field nextField = null;
         int curFieldPosX = currentField.getX(),
         	curFieldPosY = currentField.getY(),
         	nxtFieldPosX,
         	nxtFieldPosY;
-        System.out.println(mazeWidth);
         switch(side) {
         	case UP:
         		nxtFieldPosX = curFieldPosX;
@@ -146,11 +150,49 @@ public class Maze {
         Field[] fieldsToUpdate = { pacmanField, nextField };
         
         nextField.placePacman(pacmanField.getPacman()); // Przenosi Pacmana na nowe pole
-        pacmanField.removePacman(); // Usuwa Pacmana z bieżącego pola
-        pacmanField = nextField; // Aktualizuje pozycję Pacmana
+        pacmanField.removePacman(); 					// Usuwa Pacmana z bieżącego pola
+        pacmanField = nextField; 						// Aktualizuje pozycję Pacmana
 
         System.out.println("Pacman moved to: (" + nextField.getX() + ", " + nextField.getY() + ")");
         return fieldsToUpdate;
+    }
+    
+    public ArrayList<Field> MoveGhosts() {
+		ArrayList<Field> fieldsToUpdate = new ArrayList<Field>();
+		ArrayList<Field> ghostsFieldsToRemove = new ArrayList<Field>();
+		ArrayList<Field> ghostsFieldsToAdd = new ArrayList<Field>();
+		System.out.println(ghostsFields.toString());
+    	for(Field ghostField : ghostsFields) {
+    		if(!ghostField.hasGhost()) {
+    			throw new IllegalStateException("Ghost field has no ghost.");
+    		}
+    		Side moveDirection = ghostField.getGhost().getNextMove(fields);
+    		
+    		Field nextField = CheckoutField(ghostField, moveDirection);
+    		if(nextField == null || nextField.hasGhost()) {
+    			System.out.println("Stupid " + ghostField.getGhost().getColor().toString() + " ghost hitting a wall or another ghost");
+    			continue;
+    		}
+    		
+    		
+    		Boolean ghostMoved = nextField.placeOnField(ghostField.getGhost());	// Dodanie ducha do nowego pola
+    		if(ghostMoved) {
+	    		ghostField.removeGhost();										// Usunięcie ducha z poprzedniego pola
+	    		
+	    		ghostsFieldsToRemove.add(ghostField);
+	    		ghostsFieldsToAdd.add(nextField);
+	    		
+				fieldsToUpdate.add(ghostField);
+				fieldsToUpdate.add(nextField);
+    		}
+    	}
+    	for(Field fieldToRemove : ghostsFieldsToRemove) {
+    		ghostsFields.remove(fieldToRemove);
+    	}
+    	for(Field fieldToAdd : ghostsFieldsToAdd) {
+    		ghostsFields.add(fieldToAdd);
+    	}
+    	return fieldsToUpdate;
     }
 
     // Wypisuje stan labiryntu dla debugowania

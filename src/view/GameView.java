@@ -3,6 +3,8 @@ package view;
 import java.util.ArrayList;
 
 import com.googlecode.lanterna.Symbols;
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
@@ -67,42 +69,17 @@ public class GameView {
 	}
 	
 	private void DrawMaze(Field[] fields) {
-		//DrawMazeBorder();
+		DrawMazeBackground();
 		DrawFields(fields);
 	}
 	
-	private void DrawMazeBorder() {
-		int borderStartX = mazePosX;
-		int borderEndX   = mazePosX + mazeWidth + 1;
-		int borderStartY = mazePosY;
-		int borderEndY   = mazePosY + mazeHeight + 1;
-		
+	private void DrawMazeBackground() {
+		TerminalPosition leftUpperCorner = new TerminalPosition(0, 1);
+		TerminalSize terminalSize = screen.getTerminalSize();
+		TerminalSize backgroundSize = new TerminalSize(terminalSize.getColumns(), terminalSize.getRows() - 2);
 		mazeScreen
-			.setBackgroundColor(bgColor).setForegroundColor(fgColor)
-			.drawLine( // GÓRA
-					borderStartX, borderStartY,
-					borderEndX,   borderStartY,
-					Symbols.BLOCK_SOLID)
-			.drawLine(	// DÓŁ
-					borderStartX, borderEndY, 
-					borderEndX,   borderEndY, 
-					Symbols.BLOCK_SOLID)
-			.drawLine( // LEWO
-					borderStartX, borderStartY + 1, 
-					borderStartX, borderEndY - 1, 
-					Symbols.BLOCK_SOLID)
-			/*.drawLine( // LEWO
-					borderStartX - 1, borderStartY, 
-					borderStartX - 1, borderEndY, 
-					Symbols.BLOCK_SOLID)*/
-			.drawLine( // PRAWO
-					borderEndX, borderStartY + 1, 
-					borderEndX, borderEndY - 1, 
-					Symbols.BLOCK_SOLID)
-			/*.drawLine( // PRAWO
-					borderEndX + 1, borderStartY, 
-					borderEndX + 1, borderEndY, 
-					Symbols.BLOCK_SOLID)*/;
+		.setBackgroundColor(bgColor).setForegroundColor(TextColor.ANSI.BLACK_BRIGHT)
+		.fillRectangle(leftUpperCorner, backgroundSize, Symbols.BLOCK_DENSE);
 	}
 	
 	private void DrawFields(Field[] fields) {
@@ -129,6 +106,7 @@ public class GameView {
 		} else if(field.hasPacman()) {
 			fieldSymbol = Symbols.FACE_BLACK;
 			fieldColor = TextColor.ANSI.YELLOW_BRIGHT;
+			DrawScore(field.getPacman().getScore());
 			DrawLives(field.getPacman().getLives());
 		} else if(field.hasGhost()) {
 			fieldSymbol = Symbols.FACE_BLACK;
@@ -179,7 +157,18 @@ public class GameView {
 			mazeScreen
 			.setCharacter(livesPosX + i, livesPosY, Symbols.HEART);
 		}
+	}
+	
+	private void DrawScore(int score) {
+		int livesPosX = mazePosX;
+		int livesPosY = mazePosY + mazeHeight;
 		
+		String scoreString = String.valueOf(score);
+		
+		mazeScreen
+		.setBackgroundColor(bgColor).setForegroundColor(fgColor)
+		.drawLine(livesPosX, livesPosY, livesPosX + mazeWidth - 1, livesPosY, ' ')
+		.putCSIStyledString(livesPosX + mazeWidth - scoreString.length(), livesPosY, scoreString);
 	}
 	
 	public void Update(ArrayList<Field> fieldsToUpdate) {
