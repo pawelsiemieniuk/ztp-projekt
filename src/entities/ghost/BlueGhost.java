@@ -14,7 +14,7 @@ public class BlueGhost implements EventListener, IGhost {
     private IBehavior behavior;
     
     public BlueGhost() {
-        this.color = TextColor.ANSI.BLUE;
+        this.color = TextColor.ANSI.BLUE_BRIGHT;
         this.hostile = true;
         this.behavior = new RunBehavior();
     }

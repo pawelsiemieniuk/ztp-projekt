@@ -25,7 +25,6 @@ public class View implements IViewController {
     					
     private static String BUTTON_NEWGAME_TEXT 	  = "NEW GAME      ",
 			  			  BUTTON_LOADGAME_TEXT 	  = "LOAD GAME     ",
-    					  //BUTTON_LEADERBOARD_TEXT = "LEADERBOARD   ",
     					  BUTTON_EXIT_TEXT 		  = "EXIT          ",
     					  FOOTER_TEXT 			  = "Ctrl+Q: EXIT | ESC: PAUSE | Ctrl+S: SAVE";
 
@@ -113,11 +112,9 @@ public class View implements IViewController {
     		.setBackgroundColor(fgColor).setForegroundColor(bgColor)
     		.drawLine(menuPosX, ngPosY, menuPosX + menuWidth, ngPosY, ' ')
     		.drawLine(menuPosX, lgPosY, menuPosX + menuWidth, lgPosY, ' ')
-    		//.drawLine(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, BUTTON_POS_X + BUTTON_WIDTH, BUTTON_LEADERBOARD_POS_Y, ' ')
     		.drawLine(menuPosX, exPosY, menuPosX + menuWidth, exPosY, ' ')
     		.putCSIStyledString(menuPosX, ngPosY, BUTTON_NEWGAME_TEXT + Symbols.TRIANGLE_LEFT_POINTING_BLACK)
     		.putCSIStyledString(menuPosX, lgPosY, BUTTON_LOADGAME_TEXT)
-    		//.putCSIStyledString(BUTTON_POS_X, BUTTON_LEADERBOARD_POS_Y, BUTTON_LEADERBOARD_TEXT)
     		.putCSIStyledString(menuPosX, exPosY, BUTTON_EXIT_TEXT);
     	
     	DrawFooter();
@@ -177,7 +174,7 @@ public class View implements IViewController {
     	int iconPosX = screenWidth / 2 - 1;
     	if(paused) {
     		menuScreen
-    		.setBackgroundColor(bgColor).setForegroundColor(fgColor)
+    		.setBackgroundColor(fgColor).setForegroundColor(bgColor)
     		.putCSIStyledString(iconPosX, 0, "||")
     		.putCSIStyledString(pausePosX, 0, "PAUSED");
     	} else {
@@ -185,7 +182,11 @@ public class View implements IViewController {
     		.setBackgroundColor(fgColor).setForegroundColor(bgColor)
     		.drawLine(iconPosX, 0, screenWidth, 0, ' ');
     	}
-    	
+    	try {
+			screen.refresh();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     public void UpdateMenu(MenuSelect option) throws IOException {
@@ -199,7 +200,6 @@ public class View implements IViewController {
     	
     	String buttonStartText 		 = BUTTON_NEWGAME_TEXT;
     	String buttonLoadText 		 = BUTTON_LOADGAME_TEXT;
-    	//String buttonLeaderboardText = BUTTON_LEADERBOARD_TEXT;
     	String buttonExitText 		 = BUTTON_EXIT_TEXT;
     	
     	switch(option) {
@@ -209,9 +209,6 @@ public class View implements IViewController {
     		case LOAD:
     			buttonLoadText += Symbols.TRIANGLE_LEFT_POINTING_BLACK;
     			break;
-    		/*case LEADERBOARD:
-    			buttonLeaderboardText += Symbols.TRIANGLE_LEFT_POINTING_BLACK;
-    			break;*/
     		case EXIT:
     			buttonExitText += Symbols.TRIANGLE_LEFT_POINTING_BLACK;
     			break;

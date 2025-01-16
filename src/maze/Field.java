@@ -6,13 +6,14 @@ import cookie.BasicCookie;
 import cookie.Cookie;
 import cookie.FruitCookie;
 import cookie.PowerCookie;
+import entities.ghost.IGhost;
 import entities.ghost.RedGhost;
 import entities.Pacman;
 
 public class Field {
     private Map<Side, Field> neighbourField; 
     private Pacman pacman;                  
-    private RedGhost ghost;                   
+    private IGhost ghost;                   
     private Cookie cookie;
     
     private Boolean isWall;
@@ -39,8 +40,8 @@ public class Field {
     	if(object.getClass().equals(Pacman.class)) {
     		placePacman((Pacman)object);
     		objPlaced = true;
-    	} else if(object.getClass().equals(RedGhost.class)) {
-    		placeGhost((RedGhost)object);
+    	} else if(object instanceof IGhost/*IGhost.class.isInstance(object)*/) {
+    		placeGhost((IGhost)object);
     		objPlaced = true;
     	} else if(object.getClass().equals(BasicCookie.class)
     			  || object.getClass().equals(FruitCookie.class)
@@ -52,10 +53,11 @@ public class Field {
     }
 
     public Boolean hasGhost() {
+    	//System.out.println(ghost);
         return ghost != null;
     }
 
-    public RedGhost getGhost() {
+    public IGhost getGhost() {
         return ghost;
     }
 
@@ -104,7 +106,7 @@ public class Field {
         return pacman != null;
     }
 
-    public void placeGhost(RedGhost ghost) {
+    public void placeGhost(IGhost ghost) {
         this.ghost = ghost;
     }
 
