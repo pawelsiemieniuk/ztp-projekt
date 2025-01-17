@@ -2,6 +2,8 @@ package entities.ghost;
 
 import com.googlecode.lanterna.TextColor;
 
+import entities.Pacman;
+import entities.ghost.behavior.AmbushBehavior;
 import entities.ghost.behavior.IBehavior;
 import entities.ghost.behavior.RunBehavior;
 import game.EventListener;
@@ -16,7 +18,7 @@ public class BlueGhost implements EventListener, IGhost {
     public BlueGhost() {
         this.color = TextColor.ANSI.BLUE_BRIGHT;
         this.hostile = true;
-        this.behavior = new RunBehavior();
+        this.behavior = new AmbushBehavior();
     }
 
     public Side getNextMove(Field[][] fields) {
@@ -53,4 +55,28 @@ public class BlueGhost implements EventListener, IGhost {
             System.out.println("Unknown event received: " + data);
         }
     }
+
+	@Override
+	public Field getCurrentField() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IBehavior getBehavior() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Pacman getPacman() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setPacman(Pacman pacman) {
+		// TODO Auto-generated method stub
+		
+	}
 }

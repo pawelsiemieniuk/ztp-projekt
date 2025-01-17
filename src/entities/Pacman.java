@@ -1,5 +1,7 @@
 package entities;
 
+import maze.Field;
+
 public class Pacman {
     private static volatile Pacman pacman;
     
@@ -83,4 +85,25 @@ public class Pacman {
     public int getY() {
         return currentField.getY();
     }*/
+
+	public Object getDirection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Field getCurrentField() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void loseLife() {
+        lives--;
+        System.out.println("Pacman lost a life! Remaining lives: " + lives);
+
+        if (lives <= 0) {
+            System.out.println("Game Over! Pacman has no lives left.");
+            // Możesz tu zakończyć grę
+        }
+    }
+
 }

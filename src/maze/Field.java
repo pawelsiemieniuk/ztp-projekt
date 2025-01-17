@@ -7,7 +7,6 @@ import cookie.Cookie;
 import cookie.FruitCookie;
 import cookie.PowerCookie;
 import entities.ghost.IGhost;
-import entities.ghost.RedGhost;
 import entities.Pacman;
 
 public class Field {
@@ -15,45 +14,40 @@ public class Field {
     private Pacman pacman;                  
     private IGhost ghost;                   
     private Cookie cookie;
-    
     private Boolean isWall;
-    //private static final Field WALL_FIELD = new Field();
+
     private int x;  // Dodane dla współpracy z klasą Maze
     private int y;  // Dodane dla współpracy z klasą Maze
 
     public Field(int x, int y) {
-    	this(x, y, false);
+        this(x, y, false);
     }
 
     public Field(int x, int y, Boolean isWall) {
         this.x = x;
         this.y = y;
-        //this.neighbourField = new HashMap<>();
         this.pacman = null;
         this.ghost  = null;
         this.cookie = null;
         this.isWall = isWall;
     }
-    
+
     public Boolean placeOnField(Object object) {
-    	Boolean objPlaced = false;
-    	if(object.getClass().equals(Pacman.class)) {
-    		placePacman((Pacman)object);
-    		objPlaced = true;
-    	} else if(object instanceof IGhost/*IGhost.class.isInstance(object)*/) {
-    		placeGhost((IGhost)object);
-    		objPlaced = true;
-    	} else if(object.getClass().equals(BasicCookie.class)
-    			  || object.getClass().equals(FruitCookie.class)
-    			  || object.getClass().equals(PowerCookie.class)) {
-    		placeCookie((Cookie)object);
-    		objPlaced = true;
-    	}
-    	return objPlaced;
+        Boolean objPlaced = false;
+        if (object.getClass().equals(Pacman.class)) {
+            placePacman((Pacman) object);
+            objPlaced = true;
+        } else if (object instanceof IGhost) {
+            placeGhost((IGhost) object);
+            objPlaced = true;
+        } else if (object instanceof Cookie) {
+            placeCookie((Cookie) object);
+            objPlaced = true;
+        }
+        return objPlaced;
     }
 
     public Boolean hasGhost() {
-    	//System.out.println(ghost);
         return ghost != null;
     }
 
@@ -68,29 +62,31 @@ public class Field {
     public Cookie getCookie() {
         return cookie;
     }
-    // Getter dla Pacmana
+
     public Pacman getPacman() {
         return pacman;
-    } 
-    
+    }
+
     public void setNeighbour(Side side, Field field) {
         neighbourField.put(side, field);
     }
 
     public Field getNeighbour(Side side) {
-    	return neighbourField.getOrDefault(side, null);
-    	//return neighbourField.getOrDefault(side, getWallField());
+        return neighbourField.getOrDefault(side, null);
     }
-    /*
-    public static Field getWallField() {
-        return WALL_FIELD;
-    }*/
-    
+
     public Boolean isWall() {
-    	return isWall;
-    };
+        return isWall;
+    }
 
     public void placePacman(Pacman pacman) {
+        // Sprawdź, czy na polu jest duch
+        if (hasGhost()) {
+            System.out.println("Pacman encountered a ghost at field (" + x + ", " + y + "). Losing a life.");
+            pacman.loseLife(); // Pacman traci życie
+        }
+
+        // Umieść Pacmana na polu
         if (this.pacman != null) {
             System.out.println("Pacman is already on this field.");
             return;
@@ -134,5 +130,4 @@ public class Field {
     public String toString() {
         return "Field(" + x + ", " + y + ")";
     }
-
 }
