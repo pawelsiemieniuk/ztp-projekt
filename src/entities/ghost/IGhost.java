@@ -16,4 +16,6 @@ public interface IGhost {
     Pacman getPacman();
 	TextColor getColor();
 	void setPacman(Pacman pacman);
+	
+	public void Kill();
 }

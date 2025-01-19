@@ -1,5 +1,5 @@
 package cookie;
 
-public interface Cookie {
+public interface ICookie {
 	public void Eat();
 }

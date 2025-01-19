@@ -1,9 +1,9 @@
 package cookie;
 
-public abstract class ExtraCookie implements Cookie {
-    private Cookie wrappedCookie;
+public abstract class ExtraCookie implements ICookie {
+    private ICookie wrappedCookie;
 
-    public ExtraCookie(Cookie wrappedCookie) {
+    public ExtraCookie(ICookie wrappedCookie) {
         this.wrappedCookie = wrappedCookie;
     }
 
@@ -14,11 +14,11 @@ public abstract class ExtraCookie implements Cookie {
         }
     }
 
-    public Cookie getWrappedCookie() {
+    public ICookie getWrappedCookie() {
         return wrappedCookie;
     }
 
-    public void setWrappedCookie(Cookie wrappedCookie) {
+    public void setWrappedCookie(ICookie wrappedCookie) {
         this.wrappedCookie = wrappedCookie;
     }
 }

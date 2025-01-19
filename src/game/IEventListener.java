@@ -1,5 +1,5 @@
 package game;
 
-public interface EventListener {
+public interface IEventListener {
     void update(String data); 
 }

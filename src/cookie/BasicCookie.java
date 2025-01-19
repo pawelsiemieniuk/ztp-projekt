@@ -1,6 +1,6 @@
 package cookie;
 
-public class BasicCookie implements Cookie {
+public class BasicCookie implements ICookie {
     private int value; 
 
     public BasicCookie(int value) {

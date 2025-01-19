@@ -9,14 +9,15 @@ import java.util.stream.Stream;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.input.KeyStroke;
 
+import entities.Pacman;
+import game.keyHandler.*;
 import maze.Field;
 import maze.Maze;
 import maze.Side;
 import view.IViewController;
-import view.MenuSelect;
 import view.View;
 
-public class Game implements EventListener, GameController {
+public class Game implements IEventListener, IGameController {
 	private static int TERMINAL_WIDTH 	  = 46,
 					   TERMINAL_HEIGHT 	  = 40,
 					   TERMINAL_FONT_SIZE = 20;
@@ -27,22 +28,23 @@ public class Game implements EventListener, GameController {
 	private static int GHOST_MOVE_FRAMES  = 60,
 					   PACMAN_MOVE_FRAMES = 20; // Tylko gdy CONTINUOUS_MOVE_MODE = true
 	
+	private static int PACMAN_LIVES = 4;
+	
 	private IViewController viewController;
-
-	private MenuSelect[] menuSelect = MenuSelect.values();
-	private int currentMenuOption = 0;
 	
 	
 	private Maze maze;
 	
-	private int gameWidth  = 32,
-				gameHeight = 32;
+	private IKeyHandler keyHandler;
 	
-	private int score;
-	private int level;
+	private int gameWidth  = 21,
+				gameHeight = 20;
 	
-	private Boolean gameEnded  = false;
-	private Boolean gamePaused = false;
+	
+	private Boolean gameOver   	  = false;
+	private Boolean gamePaused 	  = false;
+	private Boolean pacmanDied 	  = false;
+	private Boolean pacmanPowerOn = false;
 	
 	private ArrayList<Field> fieldsToUpdate = new ArrayList<Field>();
 	
@@ -52,11 +54,17 @@ public class Game implements EventListener, GameController {
 	public Game() {
 	}
 	
-	public void InitViewController() {
+	public void Init() {
+		InitViewController();
+		InitWindow();
+		InitKeyHandler();
+	}
+	
+	private void InitViewController() {
 		viewController = View.getView();
 	}
 	
-	public void InitWindow() {
+	private void InitWindow() {
 		viewController.OpenWindow(new TerminalSize(TERMINAL_WIDTH, TERMINAL_HEIGHT), TERMINAL_FONT_SIZE);
 		viewController.SetupWindow();
 		try {
@@ -66,17 +74,29 @@ public class Game implements EventListener, GameController {
 		}
 	}
 	
+	private void InitKeyHandler() {
+		keyHandler = new KeyHandler(this);
+	}
+	
 	private void InitMaze() {
 		maze = new Maze();
 		maze.GenerateMaze(gameWidth, gameHeight);
 	}
 	
-	public void Menu() {
+	private void Setup() {
+		gameOver   	  = false;
+		gamePaused 	  = false;
+		pacmanDied 	  = false;
+		pacmanPowerOn = false;
+		Pacman.getPacman().setLives(PACMAN_LIVES);
+		ResetPacmanGhostsPosition();
 		try {
-			viewController.DrawMenu();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			viewController.UpdateGameView(fieldsToUpdate);
+		} catch (IOException e) { e.printStackTrace(); }
+	}
+	
+	public void Menu() {
+		DrawMenu();
 		try {
 			MenuLoop();
 		} catch (Exception e) {
@@ -84,9 +104,24 @@ public class Game implements EventListener, GameController {
 		}
 	}
 	
+	public void DrawMenu() {
+		try {
+			viewController.DrawMenu();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void Exit() {
+		viewController.Exit();
+    	System.exit(0);
+		System.err.println("App exit did not succeed.");
+	}
+	
 	public void StartGame() {
 		InitMaze();
 		DrawGame();
+		Setup();
 		GameLoop();
 	}
 	
@@ -99,15 +134,15 @@ public class Game implements EventListener, GameController {
 		}
 	}
 	
-	private void PauseGame() {
+	public void PauseGame() {
 		gamePaused = true;
 	}
 	
-	private void ResumeGame() {
+	public void ResumeGame() {
 		gamePaused = false;
 	}
 	
-	private void DrawGame() {
+	public void DrawGame() {
 		Field[] fieldsToDraw = (Field[]) Stream.of(maze.getFields()).flatMap(Stream::of).toArray(Field[]::new);
 		try {
 			viewController.DrawGame(fieldsToDraw);
@@ -115,13 +150,25 @@ public class Game implements EventListener, GameController {
 			e.printStackTrace();
 		}
 	}
+	
+	public void UpdateHeader(Boolean paused) {
+		viewController.UpdateHeader(paused);
+	}
 
-	private void MenuLoop() throws Exception {
+	private void MenuLoop() {
 		KeyStroke key = null;
         while(true) {
-        	key = viewController.WaitForKey();
+        	try {
+				key = viewController.WaitForKey();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         	if(key != null) {
-        		MenuKeyHandler(key);
+        		try {
+					keyHandler.Menu(key);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
         	}
         }
 	}
@@ -134,7 +181,7 @@ public class Game implements EventListener, GameController {
 			pacmanFrameCounter = 0;
 		Duration deltaTime = Duration.ZERO;
 		Instant beginFrameTime = Instant.now();
-		while(!gameEnded) {
+		while(!gameOver) {
 			try {
 				key = viewController.GetLastKey();
 				if(CONTINUOUS_MOVE_MODE && key != null) { 
@@ -145,24 +192,36 @@ public class Game implements EventListener, GameController {
 			if(CONTINUOUS_MOVE_MODE) {
 				if(lastKey != null) {
 					if(gamePaused && key != null) {
-						System.out.println(gamePaused);
-						PauseKeyHandler(key);
+						keyHandler.Pause(key);
 						lastKey = null;
 					} else if(!gamePaused) {
-						GameKeyHandler(lastKey);
+						keyHandler.Game(lastKey);
 						if(pacmanFrameCounter >= PACMAN_MOVE_FRAMES) {
-							PacmanKeyHandler(lastKey);
+							keyHandler.Pacman(lastKey);
 							pacmanFrameCounter = 0;
 						}
 					}
 				}
 			} else if(key != null) {
 				if(gamePaused) {
-					PauseKeyHandler(key);
+					keyHandler.Pause(key);
 				} else {
-					GameKeyHandler(key);
-					PacmanKeyHandler(key);
+					keyHandler.Game(key);
+					keyHandler.Pacman(key);
 				}
+			}
+			// Sprawdzenie przed ruchem duchów żeby niepotrzebnie nie aktualizować widoku
+			if(pacmanDied) {
+				// PacmanDeadAnimation();
+				ResetPacmanGhostsPosition();
+				key = lastKey = null;
+				pacmanDied = false;
+				try {
+					viewController.UpdateGameView(fieldsToUpdate);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				continue;
 			}
 
 			deltaTime = Duration.between(beginFrameTime, Instant.now());
@@ -179,29 +238,32 @@ public class Game implements EventListener, GameController {
 				} catch (IOException e) { e.printStackTrace(); }
 				beginFrameTime = Instant.now();
 			}
+			// Sprawdzenie pod koniec
+			if(pacmanDied) {
+				// PacmanDeadAnimation();
+				ResetPacmanGhostsPosition();
+				key = lastKey = null;
+				pacmanDied = false;
+				try {
+					viewController.UpdateGameView(fieldsToUpdate);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				continue;
+			}
 		}
 	}
 
-	private void SelectMenuOption() {
-		if(currentMenuOption < 0) {
-			currentMenuOption = menuSelect.length + currentMenuOption;
-		} else if(currentMenuOption > 2) {
-			currentMenuOption %= menuSelect.length;
-		}
+	public void SelectMenuOption() {
 		try {
-			viewController.UpdateMenu(menuSelect[currentMenuOption]);
+			viewController.UpdateMenu(keyHandler.getMenuOption());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void EnterMenuOption() throws Exception {
-		if(currentMenuOption < 0) {
-			currentMenuOption = menuSelect.length + currentMenuOption;
-		} else if(currentMenuOption > 2) {
-			currentMenuOption %= menuSelect.length;
-		}
-		switch(menuSelect[currentMenuOption]) {
+	public void EnterMenuOption() {
+		switch(keyHandler.getMenuOption()) {
 			case START:
 				StartGame(true);
 				break;
@@ -209,138 +271,48 @@ public class Game implements EventListener, GameController {
 				StartGame(false);
 				break;
 			case EXIT:
-				viewController.Exit();
+				Exit();
 				break;
 		}
-		currentMenuOption = 0;
+		keyHandler.resetMenuOption();
 	}
 
-	private void MenuKeyHandler(KeyStroke key) throws Exception {
-		switch(key.getKeyType()) {
-			case Enter:
-				EnterMenuOption();
-				viewController.DrawMenu();
-				return;
-			case EOF:
-				viewController.Exit();
-				return;
-			case ArrowUp:
-				currentMenuOption = currentMenuOption - 1;
-				SelectMenuOption();
-				return;
-			case ArrowDown:
-				currentMenuOption = currentMenuOption + 1;
-				SelectMenuOption();
-				return;
-			case Character:
-				break;
-			default:
-				return;
+	private void ResetPacmanGhostsPosition() {
+		for(Field field : maze.ResetGhostsPosition()) {
+			fieldsToUpdate.add(field);
 		}
-		switch(key.getCharacter()) {
-			case 'q':
-				if(key.isCtrlDown()) {
-					viewController.Exit();
-				}
-		}
-	}
-
-	public void GameKeyHandler(KeyStroke key) {
-		switch(key.getKeyType()) {
-			case EOF:
-				try {
-					viewController.Exit();
-				} catch (Exception e) { e.printStackTrace(); }
-				return;
-			case Escape: // Pause
-				viewController.UpdateHeader(true);
-				PauseGame();
-				return;
-			case Character:
-				break;
-			default:
-				return;
-		}
-		if(key.getCharacter() == 'q' && key.isCtrlDown()) {
-			try {
-				viewController.Exit();
-			} catch (Exception e) { e.printStackTrace(); }
-		}
-			
-	}
-	
-	public void PacmanKeyHandler(KeyStroke key) {
-		switch(key.getKeyType()) {
-			case ArrowUp:
-				Move(Side.UP);
-				return;
-			case ArrowDown:
-				Move(Side.DOWN);
-				return;
-			case ArrowLeft:
-				Move(Side.LEFT);
-				return;
-			case ArrowRight:
-				Move(Side.RIGHT);
-				return;
-			case Character:
-				break;
-			default:
-				return;
-		}
-		switch(key.getCharacter()) {
-			case 'w':
-				Move(Side.UP);
-				break;
-			case 's':
-				Move(Side.DOWN);
-				break;
-			case 'a': 
-				Move(Side.LEFT);
-				break;
-			case 'd': 
-				Move(Side.RIGHT);
-				break;
-		}
-	}
-
-	public void PauseKeyHandler(KeyStroke key) {
-		switch(key.getKeyType()) {
-		case EOF:
-			try {
-				viewController.Exit();
-			} catch (Exception e) { e.printStackTrace(); }
-			return;
-		case Escape: // Resume
-			viewController.UpdateHeader(false);
-			ResumeGame();
-			return;
-		case Character:
-			break;
-		default:
-			return;
-		}
-		switch(key.getCharacter()) {
-			case 'q':
-				if(key.isCtrlDown()) {
-					try {
-						viewController.Exit();
-					} catch (Exception e) { e.printStackTrace(); }
-				}
-				break;
+		for(Field field : maze.ResetPacmanPosition()) {
+			fieldsToUpdate.add(field);
 		}
 	}
 	
-	
-	private void Move(Side side) {
+	public void Move(Side side) {
 		for(Field field: maze.MovePacman(side)) {
 			fieldsToUpdate.add(field);
+			if(field.hasGhost() && field.hasPacman()) {
+				if(pacmanPowerOn) {
+					field.getGhost().Kill();
+				} else {
+					field.getPacman().loseLife();
+					if(field.getPacman().getLives() <= 0) {
+						gameOver = true;
+					}
+					pacmanDied = true;
+				}
+			}
 		}
 	}
 	
 	private void MoveGhosts() {
 		for(Field field : maze.MoveGhosts()) {
 			fieldsToUpdate.add(field);
+			if(field.hasGhost() && field.hasPacman()) {
+				field.getPacman().loseLife();
+				if(field.getPacman().getLives() <= 0) {
+					gameOver = true;
+				}
+				pacmanDied = true;
+			}
 		}
 	}
 

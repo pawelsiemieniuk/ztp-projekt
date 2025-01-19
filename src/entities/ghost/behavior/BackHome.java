@@ -7,7 +7,7 @@ import maze.Side;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class BackHomeBehavior implements IBehavior {
+public class BackHome implements IBehavior {
     @Override
     public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
         Field ghostField = ghost.getCurrentField();

@@ -148,27 +148,7 @@ public class View implements IViewController {
     		.drawLine(0, screenHeight, screenWidth, screenHeight, ' ')
 		.putCSIStyledString(1, screenHeight, FOOTER_TEXT);
     }
-    /*
-    public void DrawGameFrame(HashMap<Integer[], TextColor> blocksToDraw) throws IOException {
-    	gameBoxView.UpdateGameSpace(blocksToDraw);
-		screen.refresh();
-    }
     
-    public void UpdateCachedShape(Shape shape) throws IOException {
-    	gameBoxView.UpdateCachedShape(shape);
-    	screen.refresh();
-    }
-    
-    public void UpdateComingShapes(ArrayList<Shape> shapes) throws IOException {
-    	gameBoxView.UpdateComingShapes(shapes);
-    	screen.refresh();
-    }
-    
-    public void UpdateScore(int score) throws IOException {
-    	gameBoxView.UpdateScore(score);
-    	screen.refresh();
-    }
-    */
     public void UpdateHeader(Boolean paused) {
     	int pausePosX = screenWidth - 7;
     	int iconPosX = screenWidth / 2 - 1;
@@ -230,10 +210,8 @@ public class View implements IViewController {
     	screen.refresh();
     }
     
-    public void Exit() throws Exception {
+    public void Exit() {
     	CloseWindow();
-    	System.exit(0);
-		throw new Exception("App exit did not succeed.");
     }
     
     private void CloseWindow() {

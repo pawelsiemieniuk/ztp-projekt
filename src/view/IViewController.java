@@ -23,7 +23,7 @@ public interface IViewController {
 	public void UpdateHeader(Boolean paused);
 	public void UpdateGameView(ArrayList<Field> fieldsToUpdate) throws IOException;
 	
-	public void Exit() throws Exception;
+	public void Exit();
 	
 	public KeyStroke GetLastKey() throws IOException;
 	public KeyStroke WaitForKey() throws IOException;

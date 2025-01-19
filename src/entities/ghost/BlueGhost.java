@@ -3,14 +3,14 @@ package entities.ghost;
 import com.googlecode.lanterna.TextColor;
 
 import entities.Pacman;
-import entities.ghost.behavior.AmbushBehavior;
+import entities.ghost.behavior.Ambush;
 import entities.ghost.behavior.IBehavior;
-import entities.ghost.behavior.RunBehavior;
-import game.EventListener;
+import entities.ghost.behavior.Run;
+import game.IEventListener;
 import maze.Field;
 import maze.Side;
 
-public class BlueGhost implements EventListener, IGhost {
+public class BlueGhost implements IEventListener, IGhost {
     private TextColor color;
     private boolean hostile;
     private IBehavior behavior;
@@ -18,7 +18,7 @@ public class BlueGhost implements EventListener, IGhost {
     public BlueGhost() {
         this.color = TextColor.ANSI.BLUE_BRIGHT;
         this.hostile = true;
-        this.behavior = new AmbushBehavior();
+        this.behavior = new Ambush();
     }
 
     public Side getNextMove(Field[][] fields) {
@@ -77,6 +77,10 @@ public class BlueGhost implements EventListener, IGhost {
 	@Override
 	public void setPacman(Pacman pacman) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public void Kill() {
 		
 	}
 }

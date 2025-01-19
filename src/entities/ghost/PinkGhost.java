@@ -4,12 +4,12 @@ import com.googlecode.lanterna.TextColor;
 
 import entities.Pacman;
 import entities.ghost.behavior.IBehavior;
-import entities.ghost.behavior.RunBehavior;
-import game.EventListener;
+import entities.ghost.behavior.Run;
+import game.IEventListener;
 import maze.Field;
 import maze.Side;
 
-public class PinkGhost implements EventListener, IGhost {
+public class PinkGhost implements IEventListener, IGhost {
     private TextColor color;
     private boolean hostile;
     private IBehavior behavior;
@@ -17,7 +17,7 @@ public class PinkGhost implements EventListener, IGhost {
     public PinkGhost() {
         this.color 	  = TextColor.ANSI.MAGENTA_BRIGHT;
         this.hostile  = true;
-        this.behavior = new RunBehavior();
+        this.behavior = new Run();
     }
 
     public Side getNextMove(Field[][] fields) {
@@ -78,4 +78,8 @@ public class PinkGhost implements EventListener, IGhost {
 		// TODO Auto-generated method stub
 		
 	}
+
+    public void Kill() {
+    	hostile = false;
+    }
 }

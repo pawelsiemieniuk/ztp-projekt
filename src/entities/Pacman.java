@@ -1,13 +1,29 @@
 package entities;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import maze.Field;
+import maze.Side;
 
 public class Pacman {
     private static volatile Pacman pacman;
+    private static Map<Side, Character> pacmanCharacters;
+    static {
+    	Map<Side, Character> pacMap = new HashMap<Side, Character>();
+    	pacMap.put(Side.UP, 'Ʊ');
+    	pacMap.put(Side.DOWN, 'Ω');
+    	pacMap.put(Side.LEFT, 'Ɔ');
+    	pacMap.put(Side.RIGHT, 'C');
+    	pacmanCharacters = Collections.unmodifiableMap(pacMap);
+    }
     
-    private Boolean openMouth = true;
     private int lives = 3;
     private int score = 0;
+    
+    private Boolean openMouth = true;
+    private Side facingSide = Side.RIGHT;
     
     private Pacman() {
     }
@@ -26,9 +42,20 @@ public class Pacman {
     public void switchMouthState() {
     	openMouth = !openMouth;
     }
+    public void resetMouthState() {
+    	openMouth = false;
+    }
     
-    public Boolean isMouthOpen() {
-    	return openMouth;
+    public void setFacingSide(Side side) {
+    	facingSide = side;
+    }
+    
+    public char getCharacter() {
+    	if(!openMouth) {
+    		return 'O';
+    	} else {
+    		return pacmanCharacters.get(facingSide);
+    	}
     }
     
     public void setLives(int lives) {

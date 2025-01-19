@@ -3,7 +3,7 @@ package maze;
 import java.util.Map;
 
 import cookie.BasicCookie;
-import cookie.Cookie;
+import cookie.ICookie;
 import cookie.FruitCookie;
 import cookie.PowerCookie;
 import entities.ghost.IGhost;
@@ -13,7 +13,7 @@ public class Field {
     private Map<Side, Field> neighbourField; 
     private Pacman pacman;                  
     private IGhost ghost;                   
-    private Cookie cookie;
+    private ICookie cookie;
     private Boolean isWall;
 
     private int x;  // Dodane dla współpracy z klasą Maze
@@ -40,8 +40,8 @@ public class Field {
         } else if (object instanceof IGhost) {
             placeGhost((IGhost) object);
             objPlaced = true;
-        } else if (object instanceof Cookie) {
-            placeCookie((Cookie) object);
+        } else if (object instanceof ICookie) {
+            placeCookie((ICookie) object);
             objPlaced = true;
         }
         return objPlaced;
@@ -59,7 +59,7 @@ public class Field {
         return cookie != null;
     }
 
-    public Cookie getCookie() {
+    public ICookie getCookie() {
         return cookie;
     }
 
@@ -81,10 +81,10 @@ public class Field {
 
     public void placePacman(Pacman pacman) {
         // Sprawdź, czy na polu jest duch
-        if (hasGhost()) {
+        /*if (hasGhost()) {
             System.out.println("Pacman encountered a ghost at field (" + x + ", " + y + "). Losing a life.");
             pacman.loseLife(); // Pacman traci życie
-        }
+        }*/
 
         // Umieść Pacmana na polu
         if (this.pacman != null) {
@@ -110,7 +110,7 @@ public class Field {
         this.ghost = null;
     }
 
-    public void placeCookie(Cookie cookie) {
+    public void placeCookie(ICookie cookie) {
         this.cookie = cookie;
     }
 

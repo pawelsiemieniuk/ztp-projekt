@@ -8,7 +8,7 @@ import entities.ghost.IGhost;
 import maze.Field;
 import maze.Side;
 
-public class RunBehavior implements IBehavior {
+public class Run implements IBehavior {
     @Override
     public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
         Field ghostField = ghost.getCurrentField();

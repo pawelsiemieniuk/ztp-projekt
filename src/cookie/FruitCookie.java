@@ -3,7 +3,7 @@ package cookie;
 public class FruitCookie extends ExtraCookie {
     private int value;
 
-    public FruitCookie(Cookie wrappedCookie, int value) {
+    public FruitCookie(ICookie wrappedCookie, int value) {
         super(wrappedCookie); 
         this.value = value;
     }

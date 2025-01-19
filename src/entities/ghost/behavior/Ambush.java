@@ -4,7 +4,7 @@ import entities.ghost.IGhost;
 import maze.Field;
 import maze.Side;
 
-public class AmbushBehavior implements IBehavior {
+public class Ambush implements IBehavior {
     @Override
     public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
         Field ghostField = ghost.getCurrentField();

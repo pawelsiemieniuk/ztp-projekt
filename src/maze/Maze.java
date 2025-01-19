@@ -8,7 +8,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+
 public class Maze {
+	private static int PACMAN_START_POSITION_X 		 = 13,
+					   PACMAN_START_POSITION_Y 		 = 12,
+					   RED_GHOST_START_POSITION_X 	 = 11,
+					   BLUE_GHOST_START_POSITION_X 	 = 12,
+					   PINK_GHOST_START_POSITION_X   = 13,
+					   ORANGE_GHOST_START_POSITION_X = 14,
+					   GHOST_START_POSITION_Y 		 = 11;
+	
     private Field[][] fields;
     private Field pacmanField = null;
     private ArrayList<Field> ghostsFields = new ArrayList<>();
@@ -18,159 +27,84 @@ public class Maze {
     
     public Maze() {}
 
+    public void GenerateMaze() {
+    	
+    }
+    
     public void GenerateMaze(int width, int height) {
         mazeWidth = width;
         mazeHeight = height;
         fields = new Field[width][height];
         
         int[][] classicMazeLayout = {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0},
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0},
-            {0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0},
-            {0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-            {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0},
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0},
-            {0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0},
-            {0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-            {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0},
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0},
-            {0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0},
-            {0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-            {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+			{1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1},
+			{1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1},
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+			{1,0,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,0,1},
+			{1,0,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,0,1},
+			{1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,1,1},
+			{0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0},
+			{1,1,1,1,0,1,0,1,1,0,0,1,1,0,1,0,1,1,1,1},
+			{0,0,0,0,0,0,0,1,3,4,5,6,1,0,0,0,0,0,0,0},
+			{1,1,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1},
+			{0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0},
+			{1,1,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1},
+			{1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1},
+			{1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,1,1},
+			{1,0,0,1,0,0,0,0,0,2,0,0,0,0,0,0,1,0,0,1},
+			{1,1,0,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,1},
+			{1,0,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,0,1},
+			{1,0,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,0,1},
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
         };
-
+        // TODO do naprawy
         for (int y = 0; y < mazeHeight; y++) {
             for (int x = 0; x < mazeWidth; x++) {
-                if (y < classicMazeLayout.length && x < classicMazeLayout[y].length) {
-                    boolean isWall = classicMazeLayout[y][x] == 0;
-                    fields[x][y] = new Field(x, y, isWall);
-                } else {
-                    fields[x][y] = new Field(x, y, true); // Domyślnie ściana
+            	System.out.println(x + "+" + y);
+            	System.out.println(x + "+" + y + " | " + classicMazeLayout[y][x]);
+                switch(classicMazeLayout[x][y]) {
+                	case 1: // Wall
+                		fields[x][y] = new Field(x, y, true);
+                		break;
+                	case 2: // Pacman
+                		fields[x][y] = new Field(x, y);
+                		fields[x][y].placePacman(Pacman.getPacman());
+                		break;
+                	case 3:
+                		fields[x][y] = new Field(x, y);
+                		fields[x][y].placeGhost(new RedGhost());
+                		break;
+                	case 4:
+                		fields[x][y] = new Field(x, y);
+                		fields[x][y].placeGhost(new BlueGhost());
+                		break;
+                	case 5:
+                		fields[x][y] = new Field(x, y);
+                		fields[x][y].placeGhost(new PinkGhost());
+                		break;
+                	case 6:
+                		fields[x][y] = new Field(x, y);
+                		fields[x][y].placeGhost(new OrangeGhost());
+                		break;
                 }
             }
         }
 
-        fields[0][height / 2] = new Field(0, height / 2, false);
-        fields[width - 1][height / 2] = new Field(width - 1, height / 2, false);
 
-        // Dodawanie Pacmana
-        Pacman pacman = Pacman.getPacman();
-        PlacePacman(pacman, 1, 1);
-     // Przekaż referencję Pacmana do każdego ducha
-        for (Field ghostField : ghostsFields) {
-            if (ghostField.hasGhost()) {
-                ghostField.getGhost().setPacman(pacman);
-            }
-        }
-        placeGhostsRandomly();
-      
+        //ResetGhostsPosition();
     }
-
-    private void createPath(Field[][] fields2, int i, int j, int k, int l) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public Field[][] getFields() {
         return fields;
     }
-	private void generatePathsWithDFS(int startX, int startY) {
-	    Random random = new Random();
-	    ArrayList<int[]> directions = new ArrayList<>();
-	    directions.add(new int[] {0, -2}); // UP
-	    directions.add(new int[] {0, 2}); // DOWN
-	    directions.add(new int[] {-2, 0}); // LEFT
-	    directions.add(new int[] {2, 0}); // RIGHT
-
-	    // Startujemy od komórki (startX, startY)
-	    fields[startX][startY] = new Field(startX, startY, false);
-
-	    // Mieszamy kierunki dla losowości
-	    Collections.shuffle(directions, random);
-
-	    for (int[] direction : directions) {
-	        int newX = startX + direction[0];
-	        int newY = startY + direction[1];
-
-	        // Sprawdzamy, czy nowa komórka jest w granicach i jest ścianą
-	        if (newX > 0 && newX < mazeWidth - 1 && newY > 0 && newY < mazeHeight - 1 && fields[newX][newY].isWall()) {
-	            // Tworzymy ścieżkę między bieżącą komórką a nową
-	            fields[startX + direction[0] / 2][startY + direction[1] / 2] = new Field(startX + direction[0] / 2, startY + direction[1] / 2, false);
-	            fields[newX][newY] = new Field(newX, newY, false);
-
-	            // Rekurencyjne generowanie ścieżek
-	            generatePathsWithDFS(newX, newY);
-	        }
-	    }
-	}
 
     public void PlacePacman(Pacman pacman, int startX, int startY) {
         Field startField = fields[startX][startY];
         startField.placePacman(pacman);
         pacmanField = startField;
     }
-
-    private void placeRandomCookies(int numberOfCookies) {
-        Random random = new Random();
-        int basicCookiesCount = 0;
-        int fruitCookiesCount = 0;
-        int powerCookiesCount = 0;
-
-        for (int i = 0; i < numberOfCookies; i++) {
-            int x, y;
-            do {
-                x = random.nextInt(mazeWidth);
-                y = random.nextInt(mazeHeight);
-            } while (fields[x][y].isWall() || fields[x][y].hasCookie() || fields[x][y].hasPacman() || fields[x][y].hasGhost());
-
-            // Losowanie rodzaju ciasteczka
-            int cookieType = random.nextInt(3); // 0 - Basic, 1 - Fruit, 2 - Power
-            Cookie cookie;
-            switch (cookieType) {
-                case 0:
-                    cookie = new BasicCookie(10 + random.nextInt(11)); // Wartość 10-20
-                    basicCookiesCount++;
-                    break;
-                case 1:
-                    cookie = new FruitCookie(new BasicCookie(20 + random.nextInt(21)), 50 + random.nextInt(51)); // Wartość bazowa 20-40, owoc 50-100
-                    fruitCookiesCount++;
-                    break;
-                case 2:
-                    cookie = new PowerCookie(new BasicCookie(30 + random.nextInt(21)), 100 + random.nextInt(101)); // Wartość bazowa 30-50, moc 100-200
-                    powerCookiesCount++;
-                    break;
-                default:
-                    cookie = new BasicCookie(10);
-                    break;
-            }
-            fields[x][y].placeOnField(cookie);
-        }
-
-        System.out.println("Cookies placed:");
-        System.out.println("Basic: " + basicCookiesCount);
-        System.out.println("Fruit: " + fruitCookiesCount);
-        System.out.println("Power: " + powerCookiesCount);
-    }
-
     
     // Pobiera sąsiednie pole w podanym kierunku
     public Field CheckoutField(Field currentField, Side side) {
@@ -202,39 +136,96 @@ public class Maze {
         Field nextField = fields[nxtFieldPosX][nxtFieldPosY];
 
         // Sprawdź, czy pole jest dostępne
-        if (nextField == null || nextField.isWall() || nextField.hasGhost()) {
-            System.out.println("Field (" + nxtFieldPosX + ", " + nxtFieldPosY + ") is not accessible.");
+        if (nextField == null || nextField.isWall()) {
             return null;
         }
 
         return nextField;
     }
 
+    public Field[] ResetPacmanPosition() {
+    	Field prevField = pacmanField;
+    	Field nextField;
+    	
+    	Pacman pacman = pacmanField.getPacman();
+    	pacman.resetMouthState();
+    	pacmanField.removePacman();
+    	
+    	nextField = fields[PACMAN_START_POSITION_X][PACMAN_START_POSITION_Y] = new Field(PACMAN_START_POSITION_X, PACMAN_START_POSITION_Y);
+    	PlacePacman(pacman, PACMAN_START_POSITION_X, PACMAN_START_POSITION_Y);
+    	
+    	Field[] fieldsToUpdate = { prevField, nextField };
+    	
+    	return fieldsToUpdate;
+    }
+
+    public ArrayList<Field> ResetGhostsPosition() {
+		ArrayList<Field> fieldsToUpdate = new ArrayList<Field>();
+		ArrayList<Field> ghostsFieldsToRemove = new ArrayList<Field>();
+		ArrayList<Field> ghostsFieldsToAdd = new ArrayList<Field>();
+
+    	for(Field ghostField : ghostsFields) {
+    		if(!ghostField.hasGhost()) {
+    			throw new IllegalStateException("Ghost field has no ghost.");
+    		}
+    		
+    		int newGhostFieldX = 0;
+    		int newGhostFieldY = GHOST_START_POSITION_Y;
+    		IGhost ghost = ghostField.getGhost();
+    		
+    		if(ghost instanceof RedGhost) 		  { newGhostFieldX = RED_GHOST_START_POSITION_X; }
+    		else if(ghost instanceof BlueGhost)   { newGhostFieldX = BLUE_GHOST_START_POSITION_X; }
+    		else if(ghost instanceof PinkGhost)   { newGhostFieldX = PINK_GHOST_START_POSITION_X; }
+    		else if(ghost instanceof OrangeGhost) { newGhostFieldX = ORANGE_GHOST_START_POSITION_X; }
+    		
+    		Field newField = new Field(newGhostFieldX, newGhostFieldY);
+    		fields[newGhostFieldX][newGhostFieldY] = newField;
+    		
+    		newField.placeOnField(ghost);
+
+    		ghostField.removeGhost();										// Usunięcie ducha z poprzedniego pola
+    		
+    		ghostsFieldsToRemove.add(ghostField);
+    		ghostsFieldsToAdd.add(newField);
+    		
+			fieldsToUpdate.add(ghostField);
+			fieldsToUpdate.add(newField);
+    	}
+    	for(Field fieldToRemove : ghostsFieldsToRemove) {
+    		ghostsFields.remove(fieldToRemove);
+    	}
+    	for(Field fieldToAdd : ghostsFieldsToAdd) {
+    		ghostsFields.add(fieldToAdd);
+    	}
+		return fieldsToUpdate;
+    }
+    
     // Ruch Pacmana w określonym kierunku
     public Field[] MovePacman(Side side) {
         if (pacmanField == null) {
             throw new IllegalStateException("Pacman is not in the maze.");
         }
+        
+        Pacman.getPacman().setFacingSide(side);
+        Pacman.getPacman().switchMouthState();
 
         Field nextField = CheckoutField(pacmanField, side);
         if (nextField == null) {
-            System.out.println("Pacman cannot move to the next field. A wall is blocking the way.");
             Field[] fieldsToUpdate = {};
             return fieldsToUpdate;
         }
         
         Field[] fieldsToUpdate = { pacmanField, nextField };
         
-        nextField.placePacman(pacmanField.getPacman()); // Przenosi Pacmana na nowe pole
+        nextField.placePacman(Pacman.getPacman()); // Przenosi Pacmana na nowe pole
         pacmanField.removePacman(); 					// Usuwa Pacmana z bieżącego pola
         pacmanField = nextField; 						// Aktualizuje pozycję Pacmana
 
-        System.out.println("Pacman moved to: (" + nextField.getX() + ", " + nextField.getY() + ")");
         return fieldsToUpdate;
     }
     
  // Rozmieszczanie duchów w losowych miejscach
-    private void placeGhostsRandomly() {
+    /*private void placeGhostsRandomly() {
         Random random = new Random();
         String[] ghostColors = {"Red", "Blue", "Pink", "Orange"};
         for (String color : ghostColors) {
@@ -254,26 +245,24 @@ public class Maze {
             fields[x][y].placeOnField(ghost);
             ghostsFields.add(fields[x][y]);
         }
-    }
+    }*/
     
     public ArrayList<Field> MoveGhosts() {
 		ArrayList<Field> fieldsToUpdate = new ArrayList<Field>();
 		ArrayList<Field> ghostsFieldsToRemove = new ArrayList<Field>();
 		ArrayList<Field> ghostsFieldsToAdd = new ArrayList<Field>();
-		System.out.println(ghostsFields.toString());
+		
     	for(Field ghostField : ghostsFields) {
     		if(!ghostField.hasGhost()) {
     			throw new IllegalStateException("Ghost field has no ghost.");
     		}
     		Side moveDirection = ghostField.getGhost().getNextMove(fields);
     		if (moveDirection == null) {
-    		    System.out.println("Ghost " + ghostField.getGhost().getColor() + " has no valid move.");
-    		    continue; // Pomijamy ten duch
+    		    continue;
     		}
     		
     		Field nextField = CheckoutField(ghostField, moveDirection);
     		if(nextField == null || nextField.hasGhost()) {
-    			System.out.println("Stupid " + ghostField.getGhost().getColor().toString() + " ghost hitting a wall or another ghost");
     			continue;
     		}
     		
@@ -297,25 +286,4 @@ public class Maze {
     	}
     	return fieldsToUpdate;
     }
-
-    // Wypisuje stan labiryntu dla debugowania
-    public void printMazeState() {
-        for (int y = 0; y < fields.length; y++) {
-            for (int x = 0; x < fields[y].length; x++) {
-                Field field = fields[y][x];
-                if (field == pacmanField) {
-                    System.out.print("P "); // Pole z Pacmanem
-                } else if (field.hasGhost()) {
-                    System.out.print("G "); // Pole z duchem
-                } else if (field.hasCookie()) {
-                    System.out.print("C "); // Pole z ciasteczkiem
-                } else {
-                    System.out.print(". "); // Puste pole
-                }
-            }
-            System.out.println();
-        }
-        
-    }
-    
 }

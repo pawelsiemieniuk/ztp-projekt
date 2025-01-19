@@ -90,9 +90,10 @@ public class GameView {
 	}
 	
 	private void DrawField(Field field) {
-		Position fieldBlockPos = translatePositionToBlockPosition(new Position(field.getX(), field.getY()));
-		int fieldPosX = mazePosX + fieldBlockPos.x();
-		int fieldPosY = mazePosY + fieldBlockPos.y();
+		//Position fieldBlockPos = translatePositionToBlockPosition(new Position(field.getX(), field.getY()));
+		System.out.println(field.getX() + " " + field.getY());
+		int fieldPosX = mazePosX + field.getX();//fieldBlockPos.x();
+		int fieldPosY = mazePosY + field.getY();//fieldBlockPos.y();
 		
 		char fieldSymbol = ' ';
 		TextColor bgFieldColor = TextColor.ANSI.BLACK;
@@ -101,10 +102,10 @@ public class GameView {
 		if(field.isWall()) 
 		{
 			fieldSymbol = Symbols.BLOCK_SOLID;
-			bgFieldColor = TextColor.ANSI.WHITE_BRIGHT;
-			fieldColor = TextColor.ANSI.WHITE_BRIGHT;
+			bgFieldColor = TextColor.ANSI.BLUE;//WHITE_BRIGHT;
+			fieldColor = TextColor.ANSI.BLUE;//WHITE_BRIGHT;
 		} else if(field.hasPacman()) {
-			fieldSymbol = Symbols.FACE_BLACK;
+			fieldSymbol = field.getPacman().getCharacter();//Symbols.FACE_BLACK;
 			fieldColor = TextColor.ANSI.YELLOW_BRIGHT;
 			DrawScore(field.getPacman().getScore());
 			DrawLives(field.getPacman().getLives());
@@ -140,6 +141,7 @@ public class GameView {
 				fieldSymbol = Symbols.DIAMOND;
 			}
 		}
+		
 		
 		mazeScreen
 		.setBackgroundColor(bgFieldColor).setForegroundColor(fieldColor)
