@@ -38,11 +38,8 @@ public class KeyHandler implements IKeyHandler {
 			default:
 				return;
 		}
-		switch(key.getCharacter()) {
-			case 'q':
-				if(key.isCtrlDown()) {
-					Exit();
-				}
+		if(key.getCharacter() == 'q') {
+			Exit();
 		}
 	}
 
@@ -61,7 +58,7 @@ public class KeyHandler implements IKeyHandler {
 			default:
 				return;
 		}
-		if(key.getCharacter() == 'q' && key.isCtrlDown()) {
+		if(key.getCharacter() == 'q') {
 			Exit();
 		}
 	}
@@ -80,14 +77,10 @@ public class KeyHandler implements IKeyHandler {
 				break;
 			default:
 				return;
-			}
-			switch(key.getCharacter()) {
-				case 'q':
-					if(key.isCtrlDown()) {
-						Exit();
-					}
-					break;
-			}
+		}
+		if(key.getCharacter() == 'q') {
+			Exit();
+		}
 	}
 
 

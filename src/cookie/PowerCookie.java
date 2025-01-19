@@ -17,12 +17,7 @@ public class PowerCookie extends ExtraCookie {
     }
 
     @Override
-    public void Eat() {
-        System.out.println("You ate a PowerCookie and gained a bonus of " + value + "!");
-        applyEffect();
-    }
-
-    private void applyEffect() {
-        System.out.println("Effect applied: Player receives a bonus of " + value);
+    public int Eat() {
+    	return value + super.Eat();
     }
 }

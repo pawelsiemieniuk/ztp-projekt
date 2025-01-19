@@ -83,7 +83,6 @@ public class GameView {
 	}
 	
 	private void DrawFields(Field[] fields) {
-		System.out.println(fields[0].toString());
 		for(Field field : fields) {
 			DrawField(field);
 		}
@@ -91,7 +90,6 @@ public class GameView {
 	
 	private void DrawField(Field field) {
 		//Position fieldBlockPos = translatePositionToBlockPosition(new Position(field.getX(), field.getY()));
-		System.out.println(field.getX() + " " + field.getY());
 		int fieldPosX = mazePosX + field.getX();//fieldBlockPos.x();
 		int fieldPosY = mazePosY + field.getY();//fieldBlockPos.y();
 		

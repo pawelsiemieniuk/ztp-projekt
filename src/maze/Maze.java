@@ -10,13 +10,18 @@ import java.util.Random;
 
 
 public class Maze {
-	private static int PACMAN_START_POSITION_X 		 = 13,
-					   PACMAN_START_POSITION_Y 		 = 12,
-					   RED_GHOST_START_POSITION_X 	 = 11,
-					   BLUE_GHOST_START_POSITION_X 	 = 12,
-					   PINK_GHOST_START_POSITION_X   = 13,
-					   ORANGE_GHOST_START_POSITION_X = 14,
-					   GHOST_START_POSITION_Y 		 = 11;
+	private final static int BASIC_COOKIE_VALUE = 10,
+							 FRUIT_COOKIE_VALUE = 50,
+							 POWER_COOKIE_VALUE = 100;
+	
+	private int PACMAN_START_POSITION_X 		= 9,
+			    PACMAN_START_POSITION_Y 		= 15,
+			    RED_GHOST_START_POSITION_X 	 	= 8,
+			    BLUE_GHOST_START_POSITION_X 	= 9,
+			    PINK_GHOST_START_POSITION_X   	= 10,
+			    ORANGE_GHOST_START_POSITION_X 	= 11,
+			    GHOST_START_POSITION_Y 		 	= 9;
+	
 	
     private Field[][] fields;
     private Field pacmanField = null;
@@ -27,15 +32,38 @@ public class Maze {
     
     public Maze() {}
 
-    public void GenerateMaze() {
-    	
+    public void GenerateMaze(int width, int height) {
+    	GenerateMaze();
     }
     
-    public void GenerateMaze(int width, int height) {
-        mazeWidth = width;
-        mazeHeight = height;
-        fields = new Field[width][height];
-        
+    public void GenerateMaze() {
+        //mazeWidth = width;
+        //mazeHeight = height;
+        //fields = new Field[width][height];
+        int[][] classicMazeLayout = {
+    		{1,1,1,1,1,1,1,9,1,0,1,9,1,1,1,1,1,1,1,1,1},
+    		{1,0,8,0,0,0,1,9,1,0,1,9,1,0,0,8,1,0,0,0,1},
+    		{1,0,1,0,1,0,1,9,1,0,1,9,1,0,1,0,0,0,1,0,1},
+    		{1,0,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
+    		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
+    		{1,0,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},
+    		{1,0,1,0,0,0,1,9,9,9,9,9,0,0,1,0,0,0,1,0,1},
+    		{1,0,1,0,1,0,1,9,1,1,1,9,1,0,1,0,1,0,1,0,1},
+    		{1,0,0,0,1,0,0,9,1,3,1,9,1,0,0,0,1,0,0,0,1},
+    		{1,1,1,0,1,1,1,9,9,4,1,7,1,1,1,2,1,1,1,0,1},
+    		{1,1,1,0,1,1,1,9,9,5,1,9,1,1,1,0,1,1,1,0,1},
+    		{1,0,0,0,1,0,0,9,1,6,1,9,1,0,0,0,1,0,0,0,1},
+    		{1,0,1,0,1,0,1,9,1,1,1,9,1,0,1,0,1,0,1,0,1},
+    		{1,0,1,0,0,0,1,9,9,9,9,9,0,0,1,0,0,0,1,0,1},
+    		{1,0,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},
+    		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
+    		{1,0,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
+    		{1,0,1,0,1,0,1,9,1,0,1,9,1,0,1,0,0,0,1,0,1},
+    		{1,0,8,0,0,0,1,9,1,0,1,9,1,0,0,8,1,0,0,0,1},
+    		{1,1,1,1,1,1,1,9,1,0,1,9,1,1,1,1,1,1,1,1,1}//,
+    		//{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        };
+    	/*
         int[][] classicMazeLayout = {
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 			{1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1},
@@ -44,7 +72,7 @@ public class Maze {
 			{1,0,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,0,1},
 			{1,0,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,0,1},
 			{1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,1,1},
-			{0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0},
+			{9,9,9,1,0,1,0,0,0,0,0,0,0,0,1,0,1,9,9,9},
 			{1,1,1,1,0,1,0,1,1,0,0,1,1,0,1,0,1,1,1,1},
 			{0,0,0,0,0,0,0,1,3,4,5,6,1,0,0,0,0,0,0,0},
 			{1,1,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1},
@@ -59,41 +87,55 @@ public class Maze {
 			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
         };
-        // TODO do naprawy
+        */
+        
+        mazeWidth = 20;
+        mazeHeight = 21;
+        fields = new Field[20][21];
+        
+
         for (int y = 0; y < mazeHeight; y++) {
             for (int x = 0; x < mazeWidth; x++) {
-            	System.out.println(x + "+" + y);
-            	System.out.println(x + "+" + y + " | " + classicMazeLayout[y][x]);
+            	if(classicMazeLayout[x][y] == 1) {
+            		fields[x][y] = new Field(x, y, true);
+            	} else {
+            		fields[x][y] = new Field(x, y);
+            	}
                 switch(classicMazeLayout[x][y]) {
-                	case 1: // Wall
-                		fields[x][y] = new Field(x, y, true);
+                	case 0:
+                		fields[x][y].placeCookie(new BasicCookie(BASIC_COOKIE_VALUE));
                 		break;
-                	case 2: // Pacman
-                		fields[x][y] = new Field(x, y);
-                		fields[x][y].placePacman(Pacman.getPacman());
+                	case 7:
+                		fields[x][y].placeCookie(new FruitCookie(new BasicCookie(BASIC_COOKIE_VALUE), FRUIT_COOKIE_VALUE));
                 		break;
-                	case 3:
-                		fields[x][y] = new Field(x, y);
-                		fields[x][y].placeGhost(new RedGhost());
+                	case 8:
+                		fields[x][y].placeCookie(new PowerCookie(new BasicCookie(BASIC_COOKIE_VALUE), POWER_COOKIE_VALUE));
                 		break;
-                	case 4:
-                		fields[x][y] = new Field(x, y);
-                		fields[x][y].placeGhost(new BlueGhost());
-                		break;
-                	case 5:
-                		fields[x][y] = new Field(x, y);
-                		fields[x][y].placeGhost(new PinkGhost());
-                		break;
-                	case 6:
-                		fields[x][y] = new Field(x, y);
-                		fields[x][y].placeGhost(new OrangeGhost());
-                		break;
-                }
+	            	case 2:
+	            		fields[x][y].placePacman(Pacman.getPacman());
+	            		pacmanField = fields[x][y];
+	            		break;
+	            	case 3:
+	            		fields[x][y].placeGhost(new RedGhost());
+	            		break;
+	            	case 4:
+	            		fields[x][y].placeGhost(new BlueGhost());
+	            		break;
+	            	case 5:
+	            		fields[x][y].placeGhost(new PinkGhost());
+	            		break;
+	            	case 6:
+	            		fields[x][y].placeGhost(new OrangeGhost());
+	            		break;
+	            	case 9: 
+	            		// Empty field
+	            		break;
+            	}
             }
         }
 
-
-        //ResetGhostsPosition();
+        ResetPacmanPosition();
+        ResetGhostsPosition();
     }
 
 	public Field[][] getFields() {

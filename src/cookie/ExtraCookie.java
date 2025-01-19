@@ -8,10 +8,11 @@ public abstract class ExtraCookie implements ICookie {
     }
 
     @Override
-    public void Eat() {
+    public int Eat() {
         if (wrappedCookie != null) {
-            wrappedCookie.Eat();
+            return wrappedCookie.Eat();
         }
+        return 0;
     }
 
     public ICookie getWrappedCookie() {

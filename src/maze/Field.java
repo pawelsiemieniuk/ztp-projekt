@@ -80,15 +80,8 @@ public class Field {
     }
 
     public void placePacman(Pacman pacman) {
-        // Sprawdź, czy na polu jest duch
-        /*if (hasGhost()) {
-            System.out.println("Pacman encountered a ghost at field (" + x + ", " + y + "). Losing a life.");
-            pacman.loseLife(); // Pacman traci życie
-        }*/
-
         // Umieść Pacmana na polu
         if (this.pacman != null) {
-            System.out.println("Pacman is already on this field.");
             return;
         }
         this.pacman = pacman;

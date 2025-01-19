@@ -65,6 +65,9 @@ public class Pacman {
     	return lives;
     }
     
+    public void addScore(int score) {
+    	this.score += score;
+    }
     public void setScore(int score) {
     	this.score = score;
     }
@@ -125,12 +128,6 @@ public class Pacman {
 
 	public void loseLife() {
         lives--;
-        System.out.println("Pacman lost a life! Remaining lives: " + lives);
-
-        if (lives <= 0) {
-            System.out.println("Game Over! Pacman has no lives left.");
-            // Możesz tu zakończyć grę
-        }
     }
 
 }

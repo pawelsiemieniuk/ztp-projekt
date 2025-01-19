@@ -26,7 +26,7 @@ public class View implements IViewController {
     private static String BUTTON_NEWGAME_TEXT 	  = "NEW GAME      ",
 			  			  BUTTON_LOADGAME_TEXT 	  = "LOAD GAME     ",
     					  BUTTON_EXIT_TEXT 		  = "EXIT          ",
-    					  FOOTER_TEXT 			  = "Ctrl+Q: EXIT | ESC: PAUSE | Ctrl+S: SAVE";
+    					  FOOTER_TEXT 			  = "Q: EXIT | ESC: PAUSE";
 
 
     private Screen screen;

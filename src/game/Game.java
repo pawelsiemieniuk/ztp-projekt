@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.input.KeyStroke;
 
+import cookie.PowerCookie;
 import entities.Pacman;
 import game.keyHandler.*;
 import maze.Field;
@@ -18,9 +19,9 @@ import view.IViewController;
 import view.View;
 
 public class Game implements IEventListener, IGameController {
-	private static int TERMINAL_WIDTH 	  = 46,
-					   TERMINAL_HEIGHT 	  = 40,
-					   TERMINAL_FONT_SIZE = 20;
+	private static int TERMINAL_WIDTH 	  = 24,
+					   TERMINAL_HEIGHT 	  = 27,
+					   TERMINAL_FONT_SIZE = 30;
 
 	private static Boolean CONTINUOUS_MOVE_MODE = true;
 	
@@ -37,8 +38,8 @@ public class Game implements IEventListener, IGameController {
 	
 	private IKeyHandler keyHandler;
 	
-	private int gameWidth  = 21,
-				gameHeight = 20;
+	private int gameWidth  = 20,
+				gameHeight = 21;
 	
 	
 	private Boolean gameOver   	  = false;
@@ -289,6 +290,7 @@ public class Game implements IEventListener, IGameController {
 	public void Move(Side side) {
 		for(Field field: maze.MovePacman(side)) {
 			fieldsToUpdate.add(field);
+			
 			if(field.hasGhost() && field.hasPacman()) {
 				if(pacmanPowerOn) {
 					field.getGhost().Kill();
@@ -299,6 +301,12 @@ public class Game implements IEventListener, IGameController {
 					}
 					pacmanDied = true;
 				}
+			} else if(field.hasPacman() && field.hasCookie()) {
+				if(field.getCookie() instanceof PowerCookie) {
+					//GivePowerToPacman();
+				}
+				Pacman.getPacman().addScore(field.getCookie().Eat());
+				field.removeCookie();
 			}
 		}
 	}

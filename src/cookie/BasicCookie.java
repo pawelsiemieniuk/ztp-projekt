@@ -16,7 +16,7 @@ public class BasicCookie implements ICookie {
     }
 
     @Override
-    public void Eat() {
-        System.out.println("You ate a BasicCookie and gained " + value + " points!");
+    public int Eat() {
+    	return value;
     }
 }
