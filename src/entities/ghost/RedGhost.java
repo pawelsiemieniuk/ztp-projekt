@@ -11,15 +11,17 @@ import maze.Field;
 import maze.Side;
 
 public class RedGhost implements IEventListener, IGhost {
-    private IBehavior behavior;
     private TextColor color;
-    private boolean hostile;
-
+    private IBehavior behavior;
+    
     private int value = 100;
-
+    
+    private boolean isHostile;
+    private boolean isDead;
+    
     public RedGhost() {
         this.color = TextColor.ANSI.RED_BRIGHT;
-        this.hostile = true;
+        this.isHostile = true;
         this.behavior = new Chase();
     }
 
@@ -45,7 +47,10 @@ public class RedGhost implements IEventListener, IGhost {
 
 
     public Boolean isHostile() {
-        return hostile;
+        return isHostile;
+    }
+    public Boolean isDead() {
+    	return isDead;
     }
 
     public TextColor getColor() {
@@ -63,13 +68,8 @@ public class RedGhost implements IEventListener, IGhost {
         }
     }
     
-    @Override
-    public IBehavior getBehavior() {
-        return behavior;
-    }
-    
     public int Kill() {
-    	hostile = false;
+    	isDead = true;
     	return value;
     }
 }

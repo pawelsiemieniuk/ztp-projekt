@@ -8,8 +8,11 @@ import maze.Side;
 
 public interface IGhost {
     Side getNextMove(Field ghostField, Field[][] fields); // Decyzja o ruchu
-    void setBehavior(IBehavior behavior); // Ustawianie zachowania
-    IBehavior getBehavior(); // Pobieranie aktualnego zachowania
+    //void setBehavior(IBehavior behavior); // Ustawianie zachowania
+    
+    public Boolean isHostile();
+    public Boolean isDead();
+
 	TextColor getColor();
 	
 	public int Kill();

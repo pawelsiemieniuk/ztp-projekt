@@ -12,14 +12,17 @@ import maze.Side;
 
 public class BlueGhost implements IEventListener, IGhost {
     private TextColor color;
-    private boolean hostile;
     private IBehavior behavior;
     
     private int value = 100;
     
+    private boolean isHostile;
+    private boolean isDead;
+    
     public BlueGhost() {
         this.color = TextColor.ANSI.BLUE_BRIGHT;
-        this.hostile = true;
+        this.isHostile = true;
+        this.isDead = false;
         this.behavior = new Ambush();
     }
 
@@ -34,11 +37,10 @@ public class BlueGhost implements IEventListener, IGhost {
     }
 
     public Boolean isHostile() {
-        return hostile;
+        return isHostile;
     }
-
-    public void setHostility(boolean hostile) {
-        this.hostile = hostile;
+    public Boolean isDead() {
+    	return isDead;
     }
 
     public TextColor getColor() {
@@ -49,23 +51,17 @@ public class BlueGhost implements IEventListener, IGhost {
     public void update(String data) {
         if (data.equals("PLAYER_GOT_POWER")) {
             System.out.println("Player ate power cookie. Ghost is running randomly!");
-            setHostility(false);
+            isHostile = false;
         } else if (data.equals("PLAYER_LOST_POWER")) {
             System.out.println("Player lost power. Ghost is back to chasing player.");
-            setHostility(true);
+            isHostile = true;
         } else {
             System.out.println("Unknown event received: " + data);
         }
     }
-
-
-	@Override
-	public IBehavior getBehavior() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public int Kill() {
+		isDead = true;
 		return value;
 	}
 }

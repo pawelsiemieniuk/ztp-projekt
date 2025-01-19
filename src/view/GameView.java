@@ -12,6 +12,8 @@ import com.googlecode.lanterna.screen.Screen;
 import cookie.BasicCookie;
 import cookie.FruitCookie;
 import cookie.PowerCookie;
+import entities.Pacman;
+import entities.ghost.IGhost;
 import entities.ghost.RedGhost;
 import maze.Field;
 
@@ -23,7 +25,7 @@ public class GameView {
 	private int mazePosX, mazePosY;
 	private int mazeWidth, mazeHeight;
 	
-	private int mazeWidthInBlocks, mazeHeightInBlocks; // Block = 2 horizontal cells
+	//private int mazeWidthInBlocks, mazeHeightInBlocks; // Block = 2 horizontal cells
 	
 	
 	private Screen screen;
@@ -103,29 +105,23 @@ public class GameView {
 			bgFieldColor = TextColor.ANSI.BLUE;//WHITE_BRIGHT;
 			fieldColor = TextColor.ANSI.BLUE;//WHITE_BRIGHT;
 		} else if(field.hasPacman()) {
-			fieldSymbol = field.getPacman().getCharacter();//Symbols.FACE_BLACK;
+			fieldSymbol = Pacman.getPacman().getCharacter();//Symbols.FACE_BLACK;
 			fieldColor = TextColor.ANSI.YELLOW_BRIGHT;
-			DrawScore(field.getPacman().getScore());
-			DrawLives(field.getPacman().getLives());
+			DrawScore(Pacman.getPacman().getScore());
+			DrawLives(Pacman.getPacman().getLives());
 		} else if(field.hasGhost()) {
-			fieldSymbol = Symbols.FACE_BLACK;
-			fieldColor = field.getGhost().getColor();
-			/*switch(field.getGhost().getColor()) {
-				case TextColor.ANSI.RED:
-					fieldColor = TextColor.ANSI.RED;
-					break;
-				case TextColor.ANSI.MAGENTA_BRIGHT:
-					fieldColor = TextColor.ANSI.MAGENTA;
-					break;
-				case TextColor.ANSI.BLUE:
+			IGhost ghost = field.getGhost();
+			if(ghost.isHostile()) {
+				fieldSymbol = Symbols.FACE_BLACK;
+				fieldColor = field.getGhost().getColor();
+			} else {
+				fieldSymbol = Symbols.FACE_WHITE;
+				if(ghost.isDead()) {
 					fieldColor = TextColor.ANSI.BLUE;
-					break;
-				case TextColor.ANSI.YELLOW:
-					fieldColor = TextColor.ANSI.YELLOW;
-					break;
-			default:
-				break;
-			}*/
+				} else {
+					fieldColor = TextColor.ANSI.BLACK_BRIGHT;
+				}
+			}
 		} else if(field.hasCookie()) {
 			Class cookieClass = field.getCookie().getClass();
 			if(cookieClass.equals(BasicCookie.class)) {
