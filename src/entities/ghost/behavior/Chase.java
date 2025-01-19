@@ -6,9 +6,8 @@ import maze.Side;
 
 public class Chase implements IBehavior {
     @Override
-    public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
-        Field ghostField = ghost.getCurrentField();
-        Field pacmanField = findPacman(fields);
+    public Side CalculateNextMove(IGhost ghost, Field ghostField, Field[][] fields) {
+        Field pacmanField = findPacmanField(fields);
 
         if (ghostField == null || pacmanField == null) {
             // Jeśli nie można znaleźć ducha lub Pacmana, pozostaje w miejscu
@@ -53,7 +52,7 @@ public class Chase implements IBehavior {
     }
 
     // Metoda znajduje pole z Pacmanem w labiryncie
-    private Field findPacman(Field[][] fields) {
+    private Field findPacmanField(Field[][] fields) {
         for (int y = 0; y < fields.length; y++) {
             for (int x = 0; x < fields[y].length; x++) {
                 if (fields[y][x].hasPacman()) {

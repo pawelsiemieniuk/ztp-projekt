@@ -41,12 +41,12 @@ public class Maze {
         //mazeHeight = height;
         //fields = new Field[width][height];
         int[][] classicMazeLayout = {
-    		{1,1,1,1,1,1,1,9,1,0,1,9,1,1,1,1,1,1,1,1,1},
-    		{1,0,8,0,0,0,1,9,1,0,1,9,1,0,0,8,1,0,0,0,1},
-    		{1,0,1,0,1,0,1,9,1,0,1,9,1,0,1,0,0,0,1,0,1},
-    		{1,0,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
+    		{1,1,1,1,1,1,1,9,1,9,1,9,1,1,1,1,1,1,1,1,1},
+    		{1,0,8,0,0,0,1,9,1,9,1,9,1,0,0,8,1,0,0,0,1},
+    		{1,0,1,0,1,0,1,9,1,9,1,9,1,0,1,0,0,0,1,0,1},
+    		{1,0,1,0,1,0,1,1,1,9,1,1,1,0,1,1,1,0,1,0,1},
     		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
-    		{1,0,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},
+    		{1,0,1,0,1,1,1,1,1,9,1,1,1,0,1,0,1,1,1,0,1},
     		{1,0,1,0,0,0,1,9,9,9,9,9,0,0,1,0,0,0,1,0,1},
     		{1,0,1,0,1,0,1,9,1,1,1,9,1,0,1,0,1,0,1,0,1},
     		{1,0,0,0,1,0,0,9,1,3,1,9,1,0,0,0,1,0,0,0,1},
@@ -55,12 +55,12 @@ public class Maze {
     		{1,0,0,0,1,0,0,9,1,6,1,9,1,0,0,0,1,0,0,0,1},
     		{1,0,1,0,1,0,1,9,1,1,1,9,1,0,1,0,1,0,1,0,1},
     		{1,0,1,0,0,0,1,9,9,9,9,9,0,0,1,0,0,0,1,0,1},
-    		{1,0,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},
+    		{1,0,1,0,1,1,1,1,1,9,1,1,1,0,1,0,1,1,1,0,1},
     		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
-    		{1,0,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
-    		{1,0,1,0,1,0,1,9,1,0,1,9,1,0,1,0,0,0,1,0,1},
-    		{1,0,8,0,0,0,1,9,1,0,1,9,1,0,0,8,1,0,0,0,1},
-    		{1,1,1,1,1,1,1,9,1,0,1,9,1,1,1,1,1,1,1,1,1}//,
+    		{1,0,1,0,1,0,1,1,1,9,1,1,1,0,1,1,1,0,1,0,1},
+    		{1,0,1,0,1,0,1,9,1,9,1,9,1,0,1,0,0,0,1,0,1},
+    		{1,0,8,0,0,0,1,9,1,9,1,9,1,0,0,8,1,0,0,0,1},
+    		{1,1,1,1,1,1,1,9,1,9,1,9,1,1,1,1,1,1,1,1,1}//,
     		//{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
         };
     	/*
@@ -117,15 +117,19 @@ public class Maze {
 	            		break;
 	            	case 3:
 	            		fields[x][y].placeGhost(new RedGhost());
+	            		ghostsFields.add(fields[x][y]);
 	            		break;
 	            	case 4:
 	            		fields[x][y].placeGhost(new BlueGhost());
+	            		ghostsFields.add(fields[x][y]);
 	            		break;
 	            	case 5:
 	            		fields[x][y].placeGhost(new PinkGhost());
+	            		ghostsFields.add(fields[x][y]);
 	            		break;
 	            	case 6:
 	            		fields[x][y].placeGhost(new OrangeGhost());
+	            		ghostsFields.add(fields[x][y]);
 	            		break;
 	            	case 9: 
 	            		// Empty field
@@ -298,7 +302,7 @@ public class Maze {
     		if(!ghostField.hasGhost()) {
     			throw new IllegalStateException("Ghost field has no ghost.");
     		}
-    		Side moveDirection = ghostField.getGhost().getNextMove(fields);
+    		Side moveDirection = ghostField.getGhost().getNextMove(ghostField, fields);
     		if (moveDirection == null) {
     		    continue;
     		}
@@ -327,5 +331,13 @@ public class Maze {
     		ghostsFields.add(fieldToAdd);
     	}
     	return fieldsToUpdate;
+    }
+    
+    public ArrayList<IGhost> getGhosts() {
+    	ArrayList<IGhost> ghosts = new ArrayList<IGhost>();
+    	for(Field field : ghostsFields) {
+    		ghosts.add(field.getGhost());
+    	}
+    	return ghosts;
     }
 }

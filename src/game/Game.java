@@ -11,6 +11,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 
 import cookie.PowerCookie;
 import entities.Pacman;
+import entities.ghost.IGhost;
 import game.keyHandler.*;
 import maze.Field;
 import maze.Maze;
@@ -25,14 +26,14 @@ public class Game implements IEventListener, IGameController {
 
 	private static Boolean CONTINUOUS_MOVE_MODE = true;
 	
-	private static int FRAME_TIME_ms = 10; 	 	// ms
-	private static int GHOST_MOVE_FRAMES  = 60,
-					   PACMAN_MOVE_FRAMES = 20; // Tylko gdy CONTINUOUS_MOVE_MODE = true
+	private static int FRAME_TIME_ms 		= 10; // ms
+	private static int GHOST_MOVE_FRAMES  	= 60,
+					   PACMAN_MOVE_FRAMES 	= 20, 					 // Tylko gdy CONTINUOUS_MOVE_MODE = true
+					   PACMAN_POWER_FRAMES 	= 3000 / FRAME_TIME_ms; // time(ms) / frame time(ms)
 	
 	private static int PACMAN_LIVES = 4;
 	
 	private IViewController viewController;
-	
 	
 	private Maze maze;
 	
@@ -49,7 +50,7 @@ public class Game implements IEventListener, IGameController {
 	
 	private ArrayList<Field> fieldsToUpdate = new ArrayList<Field>();
 	
-	public EventManager events;
+	public EventManager eventManager;
 	
 	
 	public Game() {
@@ -91,9 +92,21 @@ public class Game implements IEventListener, IGameController {
 		pacmanPowerOn = false;
 		Pacman.getPacman().setLives(PACMAN_LIVES);
 		ResetPacmanGhostsPosition();
+		SetupEventManager();
 		try {
 			viewController.UpdateGameView(fieldsToUpdate);
 		} catch (IOException e) { e.printStackTrace(); }
+	}
+	
+	private void SetupEventManager() {
+		eventManager = new EventManager();
+		for(IGhost ghost : maze.getGhosts()) {
+			System.out.println(ghost instanceof IEventListener);
+			eventManager.subscribe(EventType.GetPower, (IEventListener)ghost);
+			eventManager.subscribe(EventType.LosePower, (IEventListener)ghost);
+		}
+		eventManager.subscribe(EventType.GetPower, (IEventListener)this);
+		eventManager.subscribe(EventType.LosePower, (IEventListener)this);
 	}
 	
 	public void Menu() {
@@ -179,7 +192,8 @@ public class Game implements IEventListener, IGameController {
 		KeyStroke lastKey = null;
 
 		int ghostFrameCounter  = 0,
-			pacmanFrameCounter = 0;
+			pacmanFrameCounter = 0,
+			pacmanPowerFrameCounter = 0;
 		Duration deltaTime = Duration.ZERO;
 		Instant beginFrameTime = Instant.now();
 		while(!gameOver) {
@@ -227,19 +241,27 @@ public class Game implements IEventListener, IGameController {
 
 			deltaTime = Duration.between(beginFrameTime, Instant.now());
 			if(!gamePaused && deltaTime.toMillis() >= FRAME_TIME_ms) {
+				if(CONTINUOUS_MOVE_MODE) { pacmanFrameCounter++; }
 				if(ghostFrameCounter >= GHOST_MOVE_FRAMES) {
 					MoveGhosts();
 					ghostFrameCounter = 0;
 				}
 				ghostFrameCounter++;
-				if(CONTINUOUS_MOVE_MODE) { pacmanFrameCounter++; }
-
+				
+				if(pacmanPowerOn && pacmanPowerFrameCounter >= PACMAN_POWER_FRAMES) {
+					//pacmanPowerOn = false;
+					pacmanPowerFrameCounter = 0;
+					eventManager.notify(EventType.LosePower, "PLAYER_LOST_POWER");
+				} else if(pacmanPowerOn) {
+					pacmanPowerFrameCounter++;
+				}
+				
 				try {
 					viewController.UpdateGameView(fieldsToUpdate);
 				} catch (IOException e) { e.printStackTrace(); }
 				beginFrameTime = Instant.now();
 			}
-			// Sprawdzenie pod koniec
+
 			if(pacmanDied) {
 				// PacmanDeadAnimation();
 				ResetPacmanGhostsPosition();
@@ -252,6 +274,7 @@ public class Game implements IEventListener, IGameController {
 				}
 				continue;
 			}
+			
 		}
 	}
 
@@ -303,7 +326,7 @@ public class Game implements IEventListener, IGameController {
 				}
 			} else if(field.hasPacman() && field.hasCookie()) {
 				if(field.getCookie() instanceof PowerCookie) {
-					//GivePowerToPacman();
+					GivePowerToPacman();
 				}
 				Pacman.getPacman().addScore(field.getCookie().Eat());
 				field.removeCookie();
@@ -315,18 +338,30 @@ public class Game implements IEventListener, IGameController {
 		for(Field field : maze.MoveGhosts()) {
 			fieldsToUpdate.add(field);
 			if(field.hasGhost() && field.hasPacman()) {
-				field.getPacman().loseLife();
-				if(field.getPacman().getLives() <= 0) {
-					gameOver = true;
+				if(pacmanPowerOn) {
+					Pacman.getPacman().addScore(field.getGhost().Kill());
+				} else {
+					field.getPacman().loseLife();
+					if(field.getPacman().getLives() <= 0) {
+						gameOver = true;
+					}
+					pacmanDied = true;
 				}
-				pacmanDied = true;
 			}
 		}
+	}
+	
+	private void GivePowerToPacman() {
+		eventManager.notify(EventType.GetPower, "PLAYER_GOT_POWER");
 	}
 
 	@Override
 	public void update(String data) {
-		// TODO Auto-generated method stub
+		if(data == "PLAYER_GOT_POWER") {
+			pacmanPowerOn = true;
+		} else if(data == "PLAYER_LOST_POWER") {
+			pacmanPowerOn = false;
+		}
 		
 	}
 }

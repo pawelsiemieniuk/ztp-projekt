@@ -15,15 +15,17 @@ public class BlueGhost implements IEventListener, IGhost {
     private boolean hostile;
     private IBehavior behavior;
     
+    private int value = 100;
+    
     public BlueGhost() {
         this.color = TextColor.ANSI.BLUE_BRIGHT;
         this.hostile = true;
         this.behavior = new Ambush();
     }
 
-    public Side getNextMove(Field[][] fields) {
-        System.out.println("Ghost of color " + color + " is moving.");
-        return behavior.CalculateNextMove(this, fields);
+    public Side getNextMove(Field ghostField, Field[][] fields) {
+        //System.out.println("Ghost of color " + color + " is moving.");
+        return behavior.CalculateNextMove(this, ghostField, fields);
     }
 
     public void setBehavior(IBehavior newBehavior) {
@@ -56,31 +58,14 @@ public class BlueGhost implements IEventListener, IGhost {
         }
     }
 
-	@Override
-	public Field getCurrentField() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public IBehavior getBehavior() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public Pacman getPacman() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setPacman(Pacman pacman) {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	public void Kill() {
-		
+	public int Kill() {
+		return value;
 	}
 }

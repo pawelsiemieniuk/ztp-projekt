@@ -6,8 +6,8 @@ import maze.Side;
 
 public class Ambush implements IBehavior {
     @Override
-    public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
-        Field ghostField = ghost.getCurrentField();
+    public Side CalculateNextMove(IGhost ghost, Field ghostField, Field[][] fields) {
+        ;
         Field pacmanField = findPacman(fields);
         Side pacmanDirection = findPacmanDirection(fields);
 

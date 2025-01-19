@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import entities.Pacman;
 import entities.ghost.IGhost;
 import maze.Field;
 import maze.Side;
 
 public class Run implements IBehavior {
     @Override
-    public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
-        Field ghostField = ghost.getCurrentField();
+    public Side CalculateNextMove(IGhost ghost, Field ghostField, Field[][] fields) {
         Field pacmanField = null;
-        if (ghost.getPacman() != null) {
-            pacmanField = ghost.getPacman().getCurrentField();
+        if (Pacman.getPacman() != null) {
+            pacmanField = findPacmanField(fields);
         }
 
         if (ghostField == null || pacmanField == null) {
@@ -96,5 +96,17 @@ public class Run implements IBehavior {
         Side[] sides = Side.values();
         Random rand = new Random();
         return sides[rand.nextInt(sides.length)];
+    }
+
+    // Metoda znajduje pole z Pacmanem w labiryncie
+    private Field findPacmanField(Field[][] fields) {
+        for (int y = 0; y < fields.length; y++) {
+            for (int x = 0; x < fields[y].length; x++) {
+                if (fields[y][x].hasPacman()) {
+                    return fields[y][x];
+                }
+            }
+        }
+        return null; // Pacman nie znaleziony
     }
 }

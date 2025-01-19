@@ -11,11 +11,11 @@ import maze.Field;
 import maze.Side;
 
 public class RedGhost implements IEventListener, IGhost {
+    private IBehavior behavior;
     private TextColor color;
     private boolean hostile;
-    private IBehavior behavior;
-    private Field currentField;
-    private Pacman pacman;
+
+    private int value = 100;
 
     public RedGhost() {
         this.color = TextColor.ANSI.RED_BRIGHT;
@@ -23,9 +23,9 @@ public class RedGhost implements IEventListener, IGhost {
         this.behavior = new Chase();
     }
 
-    public Side getNextMove(Field[][] fields) {
-        System.out.println("Ghost of color " + color + " is moving.");
-        return behavior.CalculateNextMove(this, fields);
+    public Side getNextMove(Field ghostField, Field[][] fields) {
+        //System.out.println("Ghost of color " + color + " is moving.");
+        return behavior.CalculateNextMove(this, ghostField, fields);
     }
 
     public void setBehavior(IBehavior newBehavior) {
@@ -62,32 +62,14 @@ public class RedGhost implements IEventListener, IGhost {
             System.out.println("Player lost power-up. Ghost is chasing again!");
         }
     }
-
-    @Override
-    public Field getCurrentField() {
-        return currentField;
-    }
-
-    public void setCurrentField(Field field) {
-        this.currentField = field;
-    }
-
-    @Override
-    public Pacman getPacman() {
-        return pacman;
-    }
-
-    @Override
-    public void setPacman(Pacman pacman) {
-        this.pacman = pacman;
-    }
-
+    
     @Override
     public IBehavior getBehavior() {
         return behavior;
     }
     
-    public void Kill() {
+    public int Kill() {
     	hostile = false;
+    	return value;
     }
 }

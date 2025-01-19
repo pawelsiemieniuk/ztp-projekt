@@ -8,10 +8,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class BackHome implements IBehavior {
+	private static int[] temp_home_pos = {8,9};
     @Override
-    public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
-        Field ghostField = ghost.getCurrentField();
-        Field homeField = ghost.getCurrentField();
+    public Side CalculateNextMove(IGhost ghost, Field ghostField, Field[][] fields) {
+        Field homeField = fields[temp_home_pos[0]][temp_home_pos[1]];
 
         if (ghostField == null || homeField == null) {
             return null; // Jeśli dane są niepełne, brak ruchu

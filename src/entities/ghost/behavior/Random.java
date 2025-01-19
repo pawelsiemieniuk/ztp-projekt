@@ -5,7 +5,7 @@ import maze.Field;
 import maze.Side;
 
 public class Random implements IBehavior {
-	public Side CalculateNextMove(IGhost ghost, Field[][] fields) {
+	public Side CalculateNextMove(IGhost ghost, Field ghostField, Field[][] fields) {
 		
 		return null;
 	}
